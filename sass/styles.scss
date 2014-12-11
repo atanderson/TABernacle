@@ -1,216 +1,48 @@
-//Color Vars
-//
+//===== _Color Variables =====
+//============================
+
 $main: #5c6d6b;
 $secondary: #c9f2d6;
 $tertiary: #ebf4ee;
 
-// Mixins
-//
-
-@mixin rounded {
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-}
+//===== _Mixins ==============
+//============================
 
 @mixin button($color){
-    color: lighten($color, 90);
-    background: $color;
-    padding: 0.5em;
+  color: lighten($color, 90);
+  background: $color;
+  padding: 0.5em;
 
-    &:hover{
-        background: lighten($color, 10);
-        border-color: lighten($color, 20);
-    }
+  &:hover{
+    background: lighten($color, 10);
+    border-color: lighten($color, 20);
+  }
 }
 
-@mixin well($rgba){
-    border: 1px solid darken($rgba, 10);
-    background: rgba(red($rgba), green($rgba), blue($rgba), 0.5);
-    -webkit-box-shadow: inset 0px 0px 20px 0px darken((rgba(red($rgba), green($rgba), blue($rgba), 0.5)), 20);
-    -moz-box-shadow:    inset 0px 0px 20px 0px darken((rgba(red($rgba), green($rgba), blue($rgba), 0.5)), 20);
-    box-shadow:         inset 0px 0px 20px 0px darken((rgba(red($rgba), green($rgba), blue($rgba), 0.5)), 20);
+@mixin input{
+  color: #b9cec0;
+  font-size: 0.9em;
+  font-style: italic;
 }
 
+@mixin shrinkdown{
+  min-width: 690px;
 
-//Specific Styles
-//
+  @media screen and (max-width: 1250px){
+    width:80%;
+  }
 
-body{
-  background-image:url('../img/background-image.jpg');
-  background-size:cover;
-  width: 100%;
-  height: 100%;
+  @media screen and (max-width: 800px){
+    width:95%;
+  }
 }
 
-.icon.search-mode{
-    @include button($color: $main);
-}
+//===== _Styles ==============
+//============================
 
-.un-list{
-    list-style:none;
-    li{
-        float: left;
-        margin-right: 0.5em;
-    }
-}
-
-.module{
-    width: 50%;
-    min-width: 320px;
-    margin: auto;
-    overflow: auto;
-    margin-top: 3em;
-
-    &.search{
-      min-width: 690px;
-
-      @media screen and (max-width: 1250px){
-        width:80%;
-      }
-
-      @media screen and (max-width: 800px){
-        width:95%;
-      }
-
-    }
-
-    ul,li,a{
-        float:left;
-    }
-
-    i.fa{
-      -webkit-transition: color, 0.25s;
-      -moz-transition: color, 0.25s;
-      -ms-transition: color, 0.25s;
-      -o-transition: color, 0.25s;
-      transition: color, 0.25s;
-      color:$main;
-      &.fa-inverse{
-        color:white;
-      }
-    }
-
-    .fa-stack:hover{
-      -webkit-transition: color, 0.25s;
-      -moz-transition: color, 0.25s;
-      -ms-transition: color, 0.25s;
-      -o-transition: color, 0.25s;
-      transition: color, 0.25s;
-      i.fa{
-        color:lighten($main, 10);
-        &.fa-inverse{
-          color: white;
-        }
-      }
-    }
-    h4{
-      width: 100%;
-      font-weight: 400;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.7em;
-      background: $secondary;
-      padding: 0.7em;
-      margin-top: 0px;
-    }
-    
-    &.small{
-        border: 1px solid $secondary;
-        float: left;
-        clear: left;
-        width: 100%;
-        background: $tertiary;
-
-        &.todo-wrapper{
-          clear: none;
-          margin-right: 0;
-          height: 456px;
-        }
-    }
-}
-
-.col-left{
-    width: 48%;
-    margin-right: 1%;
-    margin-left: 0;
-    float:left;
-}
-
-.col-right{
-    width: 48%;
-    margin-right: 0;
-    margin-left: 1%;
-    float:right;
-}
-
-.clearfix{
-
-    &:before,
-    &:after{
-        content: " ";
-        display: table; 
-    }
-
-    &:after{
-        clear:both;
-    }
-
-}
-
-.fa-ellipsis-v{
-    &:before{
-        content: "";
-    }
-    &:after{
-        content: "\f142";
-    }
-}
-
-html{
-    height: 100%;
-}
-body{
-  width: 100%;
-  height: 100%;
-  float:left;
-  margin: 0px;
-}
-
-.times{
-  font-family: 'Times New Roman', sans-serif;
-}
-
-*{
-  font-family: 'Lato', arial, serif;
-}
-
-.search-input{
-  border: 4px solid $main;
-  height: 3rem;
-  line-height: 2rem;
-  font-size: 2rem;
-  border-radius: 5px;
-  width: 70%;
-  margin-left: 15%;
-  float: left;
-  clear: both;
-  margin-bottom: 1rem;
-  padding-left: 0.3rem;
-
-}
-
-.todo-field{
-  position:absolute;
-  bottom: 0px;
-  width: 80%;
-  margin-left: 10%;
-  border: 4px solid $main;
-  height: 2rem;
-  line-height: 1.1rem;
-  padding-left: 0.2rem;
-  font-size: 1rem;
-  border-radius: 5px;
+// _Resets
+a{
+  text-decoration: none;
 }
 
 input:focus{
@@ -221,22 +53,65 @@ input:focus{
   outline: none;
 }
 
-a{
-  text-decoration: none;
+// _General/Layout
+*{
+  box-sizing: border-box;
+  font-family: 'Lato', 'Arial', sans-serif;
 }
 
-.search-modes{
-  width: 70%;
-  margin-left: 16%;
-  padding: 0px;
+html{
+  height: 100%;
+}
+
+body{
+  background-image: url('../img/background-image.jpg');
+  background-size: cover;
+  float: left;
+  height: 100%;
+  margin: 0px;
+  width: 100%;
+}
+
+.col-left,
+.col-right{
+  width: 48%;
+}
+
+.col-left{
+  float:left;
+  margin-left: 0;
+  margin-right: 1%;
+}
+
+.col-right{
+  float:right;
+  margin-left: 1%;
+  margin-right: 0;
+}
+
+// _Utility Classes
+.clearfix{
+  &:before,
+  &:after{
+    content: " ";
+    display: table; 
+  }
+
+  &:after{
+    clear:both;
+  }
+} 
+
+.un-list{
+  list-style:none;
 
   li{
-    float:right;
-    margin-right: 0px;
-    margin-left: 0.5em;
+    float: left;
+    margin-right: 0.5em;
   }
 }
 
+//Css transition
 .float {
   display: inline-block;
   -webkit-transition-duration: 0.3s;
@@ -251,48 +126,14 @@ a{
   transform: translateY(-2px);
 }
 
-.indicator{
-  top: -20px;
-  left: -10px;
-  width: 1em;
-
-  i.fa-stack-1x{
-    color: $secondary!important;
-  }
-  i.fa.fa-inverse{
-    color: darken($main, 40)!important;
-    font-size: .6rem;
-  }
-}
-
-*{
-  box-sizing: border-box;
-}
-
-.links-wrapper{
-  width: 50%;
-  margin: auto;
-  min-width: 690px;
-
-  @media screen and (max-width: 1250px){
-    width:80%;
-  }
-
-  @media screen and (max-width: 800px){
-    width:95%;
-  }
-}
-
-
-  li.task{
-    float:none;
-  }
-
+//Sometimes useful for making icons
 .lato{
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato', 'Arial', sans-serif;
 }
 
+//Sometimes useful for making icons
 .times{
+  font-family: 'Times New Roman', serif;
   font-size: 1.5em;
   line-height: 1.2em;
 }
@@ -301,27 +142,151 @@ a{
   float:right!important;
 }
 
-.todo-wrapper form{
-  display: none;
+.icon.search-mode{
+  @include button($color: $main);
 }
 
-.todo-wrapper form:nth-of-type(1){
-  display: block;
+
+// _General container 
+.module{
+  margin: 3em auto auto;
+  min-width: 320px;
+  overflow: auto;
+  width: 50%;
+
+  ul,li,a{
+    float:left;
+  }
+
+  h4{
+    width: 100%;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.7em;
+    background: $secondary;
+    padding: 0.7em;
+    margin-top: 0px;
+  }
+  
+  // _Main Search Container
+  &.search{
+    @include shrinkdown;
+  }
+
+  // _Link Icons
+  i.fa{
+    color:$main;
+    -webkit-transition: color, 0.25s;
+    -moz-transition: color, 0.25s;
+    -ms-transition: color, 0.25s;
+    -o-transition: color, 0.25s;
+    transition: color, 0.25s;
+
+    &.fa-inverse{
+      color:white;
+    }
+  }
+
+  .fa-stack:hover{
+    -webkit-transition: color, 0.25s;
+    -moz-transition: color, 0.25s;
+    -ms-transition: color, 0.25s;
+    -o-transition: color, 0.25s;
+    transition: color, 0.25s;
+
+    i.fa{
+      color:lighten($main, 10);
+
+      &.fa-inverse{
+        color: white;
+      }
+    }
+  }
+
+  // _Left and Right Column containers
+  &.small{
+    background: $tertiary;
+    border: 1px solid $secondary;
+    clear: left;
+    float: left;
+    width: 100%;
+    
+    // _Todo Container
+    &.todo-wrapper{
+      clear: none;
+      margin-right: 0;
+      height: 456px;
+    }
+  }
 }
 
-.todo-wrapper.flipped form:nth-of-type(1){
-  display: none;
+//Sometimes useful for making icons
+.fa-ellipsis-v{
+  &:before{
+    content: "";
+  }
+
+  &:after{
+    content: "\f142";
+  }
 }
 
-.todo-wrapper.flipped form:nth-of-type(2){
-  display: block;
+// _Main Search
+
+.search-input{
+  border-radius: 5px;
+  border: 4px solid $main;
+  clear: both;
+  float: left;
+  font-size: 2rem;
+  height: 3rem;
+  line-height: 2rem;
+  margin: auto auto 1rem 15%;
+  padding-left: 0.3rem;
+  width: 70%;
 }
 
-form{
-  position: relative;
-  width: 100%;
-  float:left;
-  height: 80%;
+// _Todo List
+.todo-field{
+  position:absolute;
+  bottom: 0px;
+  width: 80%;
+  margin-left: 10%;
+  border: 4px solid $main;
+  height: 2rem;
+  line-height: 1.1rem;
+  padding-left: 0.2rem;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+li.task{
+  float:none;
+}
+
+.todo-wrapper{
+  form{
+    display: none;
+    position: relative;
+    width: 100%;
+    float:left;
+    height: 80%;
+
+    &:nth-of-type(1){
+      display: block;
+    }
+  }
+
+  &.flipped form{
+    &:nth-of-type(1){
+      display: none;
+    }
+
+    &:nth-of-type(2){
+      display: block;
+    }
+  }
 }
 
 #done-list{
@@ -330,28 +295,60 @@ form{
   }
 }
 
+// _Search Mode Buttons
+.search-modes{
+  width: 70%;
+  margin-left: 16%;
+  padding: 0px;
 
+  li{
+    float:right;
+    margin-right: 0px;
+    margin-left: 0.5em;
+  }
+}
 
+.indicator{
+  top: -20px;
+  left: -10px;
+  width: 1em;
+
+  i.fa-stack-1x{
+    color: $secondary!important;
+  }
+
+  i.fa.fa-inverse{
+    color: darken($main, 40)!important;
+    font-size: .6rem;
+  }
+}
+
+// _Link Containers
+.links-wrapper{
+  width: 50%;
+  margin: auto;
+  
+  @include shrinkdown;
+}
+
+// _Text inputs
 input::-webkit-input-placeholder { /* WebKit browsers */
-    color: #b9cec0;
-    font-size: 0.9em;
-    font-style: italic;
+  @include input;
 }
+
 input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color: #b9cec0;
-   font-size: 0.9em;
-   font-style: italic;
+  @include input;
 }
+
 input::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color: #b9cec0;
-   font-size: 0.9em;
-   font-style: italic;
+  @include input;
 }
+
 input:-ms-input-placeholder { /* Internet Explorer 10+ */
-   color: #b9cec0;
-   font-size: 0.9em;
-   font-style: italic;
+  @include input;
 }
+
+// _Calendar
 
 .calendar{
   ul{
@@ -360,6 +357,7 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */
     width: 100%;
   }
 }
+
 .event{
   float:left;
   width: 18%;
@@ -381,13 +379,13 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */
   }
 
   .startDate{
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.7em;
-      background: $main;
-      color: $tertiary;
-      margin-top: 0px;
-      padding: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.7em;
+    background: $main;
+    color: $tertiary;
+    margin-top: 0px;
+    padding: 0.7em;
   }
 
   .startTime{
