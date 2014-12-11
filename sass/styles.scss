@@ -1,48 +1,216 @@
-//===== _Color Variables =====
-//============================
-
+//Color Vars
+//
 $main: #5c6d6b;
 $secondary: #c9f2d6;
 $tertiary: #ebf4ee;
 
-//===== _Mixins ==============
-//============================
+// Mixins
+//
+
+@mixin rounded {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
 
 @mixin button($color){
-  color: lighten($color, 90);
-  background: $color;
-  padding: 0.5em;
+    color: lighten($color, 90);
+    background: $color;
+    padding: 0.5em;
 
-  &:hover{
-    background: lighten($color, 10);
-    border-color: lighten($color, 20);
-  }
+    &:hover{
+        background: lighten($color, 10);
+        border-color: lighten($color, 20);
+    }
 }
 
-@mixin input{
-  color: #b9cec0;
-  font-size: 0.9em;
-  font-style: italic;
+@mixin well($rgba){
+    border: 1px solid darken($rgba, 10);
+    background: rgba(red($rgba), green($rgba), blue($rgba), 0.5);
+    -webkit-box-shadow: inset 0px 0px 20px 0px darken((rgba(red($rgba), green($rgba), blue($rgba), 0.5)), 20);
+    -moz-box-shadow:    inset 0px 0px 20px 0px darken((rgba(red($rgba), green($rgba), blue($rgba), 0.5)), 20);
+    box-shadow:         inset 0px 0px 20px 0px darken((rgba(red($rgba), green($rgba), blue($rgba), 0.5)), 20);
 }
 
-@mixin shrinkdown{
-  min-width: 690px;
 
-  @media screen and (max-width: 1250px){
-    width:80%;
-  }
+//Specific Styles
+//
 
-  @media screen and (max-width: 800px){
-    width:95%;
-  }
+body{
+  background-image:url('../img/background-image.jpg');
+  background-size:cover;
+  width: 100%;
+  height: 100%;
 }
 
-//===== _Styles ==============
-//============================
+.icon.search-mode{
+    @include button($color: $main);
+}
 
-// _Resets
-a{
-  text-decoration: none;
+.un-list{
+    list-style:none;
+    li{
+        float: left;
+        margin-right: 0.5em;
+    }
+}
+
+.module{
+    width: 50%;
+    min-width: 320px;
+    margin: auto;
+    overflow: auto;
+    margin-top: 3em;
+
+    &.search{
+      min-width: 690px;
+
+      @media screen and (max-width: 1250px){
+        width:80%;
+      }
+
+      @media screen and (max-width: 800px){
+        width:95%;
+      }
+
+    }
+
+    ul,li,a{
+        float:left;
+    }
+
+    i.fa{
+      -webkit-transition: color, 0.25s;
+      -moz-transition: color, 0.25s;
+      -ms-transition: color, 0.25s;
+      -o-transition: color, 0.25s;
+      transition: color, 0.25s;
+      color:$main;
+      &.fa-inverse{
+        color:white;
+      }
+    }
+
+    .fa-stack:hover{
+      -webkit-transition: color, 0.25s;
+      -moz-transition: color, 0.25s;
+      -ms-transition: color, 0.25s;
+      -o-transition: color, 0.25s;
+      transition: color, 0.25s;
+      i.fa{
+        color:lighten($main, 10);
+        &.fa-inverse{
+          color: white;
+        }
+      }
+    }
+    h4{
+      width: 100%;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.7em;
+      background: $secondary;
+      padding: 0.7em;
+      margin-top: 0px;
+    }
+    
+    &.small{
+        border: 1px solid $secondary;
+        float: left;
+        clear: left;
+        width: 100%;
+        background: $tertiary;
+
+        &.todo-wrapper{
+          clear: none;
+          margin-right: 0;
+          height: 456px;
+        }
+    }
+}
+
+.col-left{
+    width: 48%;
+    margin-right: 1%;
+    margin-left: 0;
+    float:left;
+}
+
+.col-right{
+    width: 48%;
+    margin-right: 0;
+    margin-left: 1%;
+    float:right;
+}
+
+.clearfix{
+
+    &:before,
+    &:after{
+        content: " ";
+        display: table; 
+    }
+
+    &:after{
+        clear:both;
+    }
+
+}
+
+.fa-ellipsis-v{
+    &:before{
+        content: "";
+    }
+    &:after{
+        content: "\f142";
+    }
+}
+
+html{
+    height: 100%;
+}
+body{
+  width: 100%;
+  height: 100%;
+  float:left;
+  margin: 0px;
+}
+
+.times{
+  font-family: 'Times New Roman', sans-serif;
+}
+
+*{
+  font-family: 'Lato', arial, serif;
+}
+
+.search-input{
+  border: 4px solid $main;
+  height: 3rem;
+  line-height: 2rem;
+  font-size: 2rem;
+  border-radius: 5px;
+  width: 70%;
+  margin-left: 15%;
+  float: left;
+  clear: both;
+  margin-bottom: 1rem;
+  padding-left: 0.3rem;
+
+}
+
+.todo-field{
+  position:absolute;
+  bottom: 0px;
+  width: 80%;
+  margin-left: 10%;
+  border: 4px solid $main;
+  height: 2rem;
+  line-height: 1.1rem;
+  padding-left: 0.2rem;
+  font-size: 1rem;
+  border-radius: 5px;
 }
 
 input:focus{
@@ -53,65 +221,22 @@ input:focus{
   outline: none;
 }
 
-// _General/Layout
-*{
-  box-sizing: border-box;
-  font-family: 'Lato', 'Arial', sans-serif;
+a{
+  text-decoration: none;
 }
 
-html{
-  height: 100%;
-}
-
-body{
-  background-image: url('../img/background-image.jpg');
-  background-size: cover;
-  float: left;
-  height: 100%;
-  margin: 0px;
-  width: 100%;
-}
-
-.col-left,
-.col-right{
-  width: 48%;
-}
-
-.col-left{
-  float:left;
-  margin-left: 0;
-  margin-right: 1%;
-}
-
-.col-right{
-  float:right;
-  margin-left: 1%;
-  margin-right: 0;
-}
-
-// _Utility Classes
-.clearfix{
-  &:before,
-  &:after{
-    content: " ";
-    display: table; 
-  }
-
-  &:after{
-    clear:both;
-  }
-} 
-
-.un-list{
-  list-style:none;
+.search-modes{
+  width: 70%;
+  margin-left: 16%;
+  padding: 0px;
 
   li{
-    float: left;
-    margin-right: 0.5em;
+    float:right;
+    margin-right: 0px;
+    margin-left: 0.5em;
   }
 }
 
-//Css transition
 .float {
   display: inline-block;
   -webkit-transition-duration: 0.3s;
@@ -126,188 +251,6 @@ body{
   transform: translateY(-2px);
 }
 
-//Sometimes useful for making icons
-.lato{
-  font-family: 'Lato', 'Arial', sans-serif;
-}
-
-//Sometimes useful for making icons
-.times{
-  font-family: 'Times New Roman', serif;
-  font-size: 1.5em;
-  line-height: 1.2em;
-}
-
-.right{
-  float:right!important;
-}
-
-.icon.search-mode{
-  @include button($color: $main);
-}
-
-
-// _General container 
-.module{
-  margin: 3em auto auto;
-  min-width: 320px;
-  overflow: auto;
-  width: 50%;
-
-  ul,li,a{
-    float:left;
-  }
-
-  h4{
-    width: 100%;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.7em;
-    background: $secondary;
-    padding: 0.7em;
-    margin-top: 0px;
-  }
-  
-  // _Main Search Container
-  &.search{
-    @include shrinkdown;
-  }
-
-  // _Link Icons
-  i.fa{
-    color:$main;
-    -webkit-transition: color, 0.25s;
-    -moz-transition: color, 0.25s;
-    -ms-transition: color, 0.25s;
-    -o-transition: color, 0.25s;
-    transition: color, 0.25s;
-
-    &.fa-inverse{
-      color:white;
-    }
-  }
-
-  .fa-stack:hover{
-    -webkit-transition: color, 0.25s;
-    -moz-transition: color, 0.25s;
-    -ms-transition: color, 0.25s;
-    -o-transition: color, 0.25s;
-    transition: color, 0.25s;
-
-    i.fa{
-      color:lighten($main, 10);
-
-      &.fa-inverse{
-        color: white;
-      }
-    }
-  }
-
-  // _Left and Right Column containers
-  &.small{
-    background: $tertiary;
-    border: 1px solid $secondary;
-    clear: left;
-    float: left;
-    width: 100%;
-    
-    // _Todo Container
-    &.todo-wrapper{
-      clear: none;
-      margin-right: 0;
-      height: 456px;
-    }
-  }
-}
-
-//Sometimes useful for making icons
-.fa-ellipsis-v{
-  &:before{
-    content: "";
-  }
-
-  &:after{
-    content: "\f142";
-  }
-}
-
-// _Main Search
-
-.search-input{
-  border-radius: 5px;
-  border: 4px solid $main;
-  clear: both;
-  float: left;
-  font-size: 2rem;
-  height: 3rem;
-  line-height: 2rem;
-  margin: auto auto 1rem 15%;
-  padding-left: 0.3rem;
-  width: 70%;
-}
-
-// _Todo List
-.todo-field{
-  position:absolute;
-  bottom: 0px;
-  width: 80%;
-  margin-left: 10%;
-  border: 4px solid $main;
-  height: 2rem;
-  line-height: 1.1rem;
-  padding-left: 0.2rem;
-  font-size: 1rem;
-  border-radius: 5px;
-}
-
-li.task{
-  float:none;
-}
-
-.todo-wrapper{
-  form{
-    display: none;
-    position: relative;
-    width: 100%;
-    float:left;
-    height: 80%;
-
-    &:nth-of-type(1){
-      display: block;
-    }
-  }
-
-  &.flipped form{
-    &:nth-of-type(1){
-      display: none;
-    }
-
-    &:nth-of-type(2){
-      display: block;
-    }
-  }
-}
-
-#done-list{
-  .task{
-    color: #d86161;
-  }
-}
-
-// _Search Mode Buttons
-.search-modes{
-  width: 70%;
-  margin-left: 16%;
-  padding: 0px;
-
-  li{
-    float:right;
-    margin-right: 0px;
-    margin-left: 0.5em;
-  }
-}
-
 .indicator{
   top: -20px;
   left: -10px;
@@ -316,39 +259,99 @@ li.task{
   i.fa-stack-1x{
     color: $secondary!important;
   }
-
   i.fa.fa-inverse{
     color: darken($main, 40)!important;
     font-size: .6rem;
   }
 }
 
-// _Link Containers
+*{
+  box-sizing: border-box;
+}
+
 .links-wrapper{
   width: 50%;
   margin: auto;
-  
-  @include shrinkdown;
+  min-width: 690px;
+
+  @media screen and (max-width: 1250px){
+    width:80%;
+  }
+
+  @media screen and (max-width: 800px){
+    width:95%;
+  }
 }
 
-// _Text inputs
+
+  li.task{
+    float:none;
+  }
+
+.lato{
+  font-family: 'Lato', sans-serif;
+}
+
+.times{
+  font-size: 1.5em;
+  line-height: 1.2em;
+}
+
+.right{
+  float:right!important;
+}
+
+.todo-wrapper form{
+  display: none;
+}
+
+.todo-wrapper form:nth-of-type(1){
+  display: block;
+}
+
+.todo-wrapper.flipped form:nth-of-type(1){
+  display: none;
+}
+
+.todo-wrapper.flipped form:nth-of-type(2){
+  display: block;
+}
+
+form{
+  position: relative;
+  width: 100%;
+  float:left;
+  height: 80%;
+}
+
+#done-list{
+  .task{
+    color: #d86161;
+  }
+}
+
+
+
 input::-webkit-input-placeholder { /* WebKit browsers */
-  @include input;
+    color: #b9cec0;
+    font-size: 0.9em;
+    font-style: italic;
 }
-
 input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  @include input;
+   color: #b9cec0;
+   font-size: 0.9em;
+   font-style: italic;
 }
-
 input::-moz-placeholder { /* Mozilla Firefox 19+ */
-  @include input;
+   color: #b9cec0;
+   font-size: 0.9em;
+   font-style: italic;
 }
-
 input:-ms-input-placeholder { /* Internet Explorer 10+ */
-  @include input;
+   color: #b9cec0;
+   font-size: 0.9em;
+   font-style: italic;
 }
-
-// _Calendar
 
 .calendar{
   ul{
@@ -357,7 +360,6 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */
     width: 100%;
   }
 }
-
 .event{
   float:left;
   width: 18%;
@@ -379,13 +381,13 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */
   }
 
   .startDate{
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.7em;
-    background: $main;
-    color: $tertiary;
-    margin-top: 0px;
-    padding: 0.7em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.7em;
+      background: $main;
+      color: $tertiary;
+      margin-top: 0px;
+      padding: 0.7em;
   }
 
   .startTime{

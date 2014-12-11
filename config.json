@@ -42,7 +42,7 @@ var config = {
                 "title": "crystalcommerce",
                 "icon": "fa-bell-o",
                 "text": "",
-                "value": "http://www.twitch.tv"
+                "value": "http://www.crystalcommerce.com"
             }
         ],
         "set2": [
