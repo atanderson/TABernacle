@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <!--
+    Custom Start Page by Andrew Anderson
+    https://github.com/atanderson
+    -->
+
+    <meta charset="UTF-8">
+
+    <title>Start Page</title>
+
+    <script type='text/javascript' src='https://code.jquery.com/jquery-2.1.1.min.js'></script>
+    <script src='config.json'></script>
+    <script type='text/javascript' src='js/search.js'></script>
+    <script type='text/javascript' src='js/todo.js'></script>
+    <script type='text/javascript' src='js/scripts.js'></script>
+    <script type='text/javascript' src='js/calendar.js'></script>
+    <script type='text/javascript' src='js/moment.js'></script>
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:100,400,900' rel='stylesheet' type='text/css'>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <div class="module clearfix search">
+            
+            <ul id="search-modes" class="un-list search-modes">
+
+            </ul>
+    
+            <input type="" class="search-input" id="search-input" data-placeholder="search" placeholder="search">
+    
+        </div>
+        
+        <div class="links-wrapper clearfix">
+
+                <div id="link-module-wrapper" class="col-left">            
+
+                </div>
+
+                <div class="col-right">
+                        
+                    <div class="module small todo-wrapper">
+
+                        <h4>
+                            <span>To-Do</span> 
+                            <a href="javascript:void(0)" class="right"><i id='swapper' class="fa fa-arrows-h"></i></a>
+                        </h4>
+
+                        <form>
+                            <input id="todo-field" class="todo-field" type="text" placeholder="enter a to-do item" data-placeholder="enter a to-do item">
+                            <ul id="todo-list" class="todo-list"></ul>
+                        </form>
+
+                        <form>
+                            <ul id="done-list" class="done-list"></ul>
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <div class="module small">
+                    <h4>
+                        <span>Coming Up</span> 
+                    </h4>
+                    <div id="calendar" class="calendar">
+                        <ul></ul>
+                    </div>
+                </div>
+
+        </div>
+
+</body>
+</html>
