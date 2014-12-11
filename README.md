@@ -42,3 +42,5 @@ A custom new tab page for persnickety people.
     - Replace background-image.jpg in the images folder if you would like to re-skin
 
     - Three sass variables control the color scheme for the skin and can be found at the top of styles.scss
+
+jQuery & Moment.js used under the terms of the [MIT license](http://opensource.org/licenses/MIT)
