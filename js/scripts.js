@@ -79,4 +79,6 @@ $(document).ready(function() {
 
     });
 
+    insertCalendar('#calendar ul');
+
 });

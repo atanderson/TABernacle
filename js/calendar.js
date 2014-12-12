@@ -1,63 +1,73 @@
-var calID = config.calendar.id;
+var insertCalendar = function(target) {
 
-//Api key of the client captured from the calendar settings element
-var key = config.calendar.apikey;
+    //Get Calendar ID from config object
+    var calID = config.calendar.id;
 
-//Define where you want to append the calendar
-var target = '#calendar';
+    //Get Api key from config object
+    var key = config.calendar.apikey;
 
-//Define today's date for event truncation
-var date = new Date();
+    //If the calendarID or Key is not defined, get out
+    if(!calID || !key){ return false; }
 
-//Build the url for the json request
-var url =  'https://www.googleapis.com/calendar/v3/calendars/'
-            + calID 
-            + '/events?singleEvents=true&orderBy=startTime&maxResults=5&timeMin=' 
-            // todays date turned into an ISO string for the parameter
-            + date.toISOString() 
-            + '&key=' + key;
+    //Define today's date
+    var date = new Date();
 
-//Append a ul to the target to hold all of our list items
-$(target).append('<ul></ul>');
+    //Build JSON request url with above variables
+    var url =  'https://www.googleapis.com/calendar/v3/calendars/'
+                + calID 
+                + '/events?singleEvents=true&orderBy=startTime&maxResults=5&timeMin=' 
+                + date.toISOString() 
+                + '&key=' + key;
 
-    //Get the json object from the request url we just built
+    //JSON request using the built url
     $.getJSON(url, function(data) {
 
-    //Loop through top level items (aka events)
-    for(i in data['items']) {
+        //Define the calendar as an empty array of events
+        var calendar = [];
 
-        //Define a single item
-        item = data['items'][i];
+        //For each event in the returned json data
+        for(var i in data.items) {
 
-        //Format the start and end date from ISO so that it is readable by humans
-        formattedToday = moment(date).format('MMM Do');
-        formattedStartDate = moment(item.start.dateTime).format('MMM Do');
-        formattedStart = moment(item.start.dateTime).format('h:mm');
-        formattedEnd = moment(item.end.dateTime).format('h:mm');
-        //Build the output for the individual event
-        var output = '';
+            //Define a single event
+            item = data.items[i];
 
-        if (formattedToday == formattedStartDate){
-            todayClass = ' today';
-        } else {
-            todayClass = '';
+            console.log(item);
+            console.log(i);
+
+            //Take today's date and format it with moment.js
+            todayMonthDay = moment(date).format('MMM Do');
+
+            //Take the event's start date and format it with moment.js
+            startMonthDay = moment(item.start.dateTime).format('MMM Do');
+
+            //Take the event's start time and format it with moment.js
+            startTime = moment(item.start.dateTime).format('h:mm');
+
+            //Take the event's end time and format it with moment.js
+            endTime = moment(item.end.dateTime).format('h:mm');
+
+            //Define the output of an event
+            var output = '';
+            output += '<span class="startDate">' + startMonthDay + '</span>';
+            output += '<span class="startTime">' + startTime + '-' + endTime + '</span>';
+            output += '<span class="title">' + item.summary + '</span>';
+
+            //If today is the same day as an outputted event
+            if (startMonthDay == todayMonthDay){
+                //Define todayClass as today
+                todayClass = ' today';
+            } else {
+                todayClass = '';
+            }
+
+            //Build the li containing the event data push it to our calendar array
+            calendar.push('<li class="event' + todayClass + '">' + '<a href="' + item.htmlLink + '">' + output + '</a></li>');
+
         }
 
-        output += '<span class="startDate">'
-        output += formattedStartDate;
-        output += '</span>'
-        output += '<span class="startTime">';
-        output += formattedStart;
-        output += '-';
-        output += formattedEnd;
-        output += '</span>'
-        output += '<span class="title">';
-        output += item.summary;
-        output += '</span>';
-        
-        //Append the output in a li in our new ul
-        $(target + ' ul').append('<li class="event' + todayClass + '">' + '<a href="' + item.htmlLink + '">' + output + '</a></li>');
+        //Append the calendar array into the target
+        $(target).append(calendar);
 
-    }
+    });
 
-});
+};
