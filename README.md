@@ -99,6 +99,7 @@ Hotkeys can be specified to activate search modes and use [Javascript keycodes](
 
 
 **Todo/Done List**
+
 Basic todo list. Click the upper right icon to see items you have crossed off.
 
 Localstorage must be enabled to preserve data!
