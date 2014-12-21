@@ -1,46 +1,112 @@
-TABernacle
-==========
+#TABernacle
 
-A custom new tab page for persnickety people.
+*A custom new tab page for persnickety people.*
 
-*How To Use*
+##How To Use
 
-- Edit config.json to create a custom link/module/calendar/searchmode setup
+- Edit the config.js file to create the HTML elements for your page.
+- Edit the sass color variables and background-image.jpg to re-skin the page.
 
-- Calendar
+##Config.js
 
-    - Api Key and ID need to be specified in the config.json for the calendar to show up
+**Custom Links**
 
-- Custom Searches
+Inside of the config object there is a links object that determines the titles/number of link containers (AKA modules) and their contents.
 
-    - Searchmodes wrap a string array around the search query and create a new tab/window (browser dependant) with the resulting string. 
+*example*
 
-    - Hotkeys can be specified to activate searchmodes and use the [Javascript keycodes](http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes)
+```Javascript
+    "links": {
+        //A module will be generated for each title
+        "titles": [
+            "Module 1"
+        ],
+        /*
+        This array represents a group of links to be appended into a module. 
+        The name is not used for anything, the sets will simply be appended
+        to the title with the same index.
+        */
+        "set1": [
+            //This object represents 
+            {   
+                //Title of the link (can be used for custom CSS if desired).
+                "title": "twitch",
+                //Font Awesome icon to be used for the link.
+                "icon": "fa-bell-o",
+                //Text of the link (can be combined with the icon for interesting effects).
+                "text": "",
+                //Href value for the link.
+                "value": "http://www.twitch.tv"
+            }
+        ]
+    }
+```
 
-    - You can pass in an indicator to remind you of what key does what
+**Google Calendar**
 
-    - If button is true the mode will be visible above the search bar
+A google calendar ID and API key can be specified in the config object to output a google calendar into the "coming up" section
 
-- Custom links
+*example*
 
-    - A lefthand module will be created for every item in the "titles" array
+```Javascript
+    "calendar": {
+        "id": "myCalendar@gmail.com",
+        "apikey": "my api key"
+    }
+```
 
-    - A set of links will be created for every "set" array and be inserted into the corresponding titled module.
+**Custom Search Modes**
 
-    - Icon specifies the font-awesome icon to use
+Search modes are defined in the searchmodes object in the config, and wrap a string array around the search query in a new tab/window (browser dependant)
 
-    - You can also pass any html object or string into the text value for a link
+Hotkeys can be specified to activate search modes and use [Javascript keycodes](http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes)
 
-    - Value indicates where the link goes
+*example*
+```Javascript
+    "searchModes": {
+        //The name is the ID of the search mode (can be used for CSS)
+        "reddit": {
+            //Text to use for the button label
+            "label": "Reddit",
+            /*
+            Array used to generate the window location. query[0] will go before the 
+            search query, query[1] will go after.
+            */
+            "query": ["http://www.reddit.com/r/", ""],
+            //Hotkey used to execute a particular search mode
+            "hotkey": 49,
+            //Indicator for the hotkey
+            "indicator": 1,
+            //Make a button appear over the search input
+            "button": true
+        }
+    }
+```
 
-- Todo/done list
+*another example*
+```Javascript
+//For a "disambiguation" wikipedia search
+"searchModes": {
+    "wikiAll": {
+        "label": "Wikipedia (all)",
+        "query": ["http://en.wikipedia.org/wiki/", "_(disambiguation)"],
+        "hotkey": 49,
+        "indicator": 1,
+        "button": false
+    }
+}
+```
 
-    - All the to-do items are saved in localstorage. Make sure your browser supports localstorage or it will not work!
 
-- Skins 
+**Todo/Done List**
+- Basic todo list. Click the upper right icon to see items you have crossed off.
+- Localstorage must be enabled to preserve data!
 
-    - Replace background-image.jpg in the images folder if you would like to re-skin
+##Skinning
 
-    - Three sass variables control the color scheme for the skin and can be found at the top of styles.scss
+- Replace background-image.jpg in the images folder for a full-screen background image
+- Three sass variables control the color scheme for the skin and can be found at the top of styles.scss
 
-jQuery & Moment.js used under the terms of the [MIT license](http://opensource.org/licenses/MIT)
+*****
+
+*jQuery, Moment.js & Font Awesome used under the terms of the [MIT license](http://opensource.org/licenses/MIT)*

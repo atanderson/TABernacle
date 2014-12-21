@@ -37,15 +37,15 @@ var config = {
             "Module 2",
             "Module 3"
         ],
-        "set1": [
+        "doop": [
             {
-                "title": "crystalcommerce",
+                "title": "twitch",
                 "icon": "fa-bell-o",
                 "text": "",
                 "value": "http://www.twitch.tv"
             }
         ],
-        "set2": [
+        "oop": [
             {
                 "title": "you can put text instead of an icon",
                 "icon": "",
@@ -53,7 +53,7 @@ var config = {
                 "value": "http://www.youtube.com"
             },
         ],
-        "set3": [
+        "hello": [
             {
                 "title": "get jiggy with it",
                 "icon": "fa-music",

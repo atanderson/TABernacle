@@ -1,16 +1,14 @@
 var insertCalendar = function(target) {
 
     //Get Calendar ID from config object
-    var calID = config.calendar.id;
-
-    //Get Api key from config object
-    var key = config.calendar.apikey;
+    var calID = config.calendar.id,
+        //Get Api key from config object
+        key = config.calendar.apikey,
+        //Define today's date
+        date = new Date();
 
     //If the calendarID or Key is not defined, get out
-    if(!calID || !key){ return false; }
-
-    //Define today's date
-    var date = new Date();
+    if (!calID || !key) { return false; }
 
     //Build JSON request url with above variables
     var url =  'https://www.googleapis.com/calendar/v3/calendars/'
@@ -30,10 +28,7 @@ var insertCalendar = function(target) {
 
             //Define a single event
             item = data.items[i];
-
-            console.log(item);
-            console.log(i);
-
+            
             //Take today's date and format it with moment.js
             todayMonthDay = moment(date).format('MMM Do');
 

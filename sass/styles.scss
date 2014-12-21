@@ -1,9 +1,9 @@
 //===== _Color Variables =====
 //============================
 
-$main: #5c6d6b;
-$secondary: #c9f2d6;
-$tertiary: #ebf4ee;
+$main: #101010;
+$secondary: #DBDBDB;
+$tertiary: #ECECEC;
 
 //===== _Mixins ==============
 //============================
@@ -20,7 +20,7 @@ $tertiary: #ebf4ee;
 }
 
 @mixin input{
-  color: #b9cec0;
+  color: darken($secondary, 10);
   font-size: 0.9em;
   font-style: italic;
 }

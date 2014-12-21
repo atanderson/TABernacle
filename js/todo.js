@@ -1,11 +1,13 @@
-$(document).ready(function() {
+var handleTodo = function(){
 
     var loadList = function(){
 
         var testdata = localStorage.getItem('data');
 
         if(!testdata){
+
             localStorage.setItem('data', JSON.stringify([]));
+
         };
 
         var rdata = JSON.parse(localStorage['data']);
@@ -13,8 +15,11 @@ $(document).ready(function() {
         $.each(rdata, function(index, value){
 
             output = '';
+
             output += '<li class="task">';
+
             output += value;
+
             output += '</li>'
 
             $('#todo-list').append(output);
@@ -24,18 +29,26 @@ $(document).ready(function() {
         var testdone = localStorage.getItem('doneList');
 
         if(!testdone){
+
             localStorage.setItem('doneList', JSON.stringify([]));
+
         };
 
         var ddata = JSON.parse(localStorage['doneList']);
 
         $.each(ddata, function(index,value){
+
             output = '';
+
             output += '<li class="task">';
+
             output += value;
+
+
             output += '</li>'
 
             $('#done-list').append(output);
+
         });
 
     }
@@ -47,7 +60,9 @@ $(document).ready(function() {
         var testdata = localStorage.getItem('data');
 
         if(!testdata){
+
             localStorage.setItem('data', JSON.stringify([]));
+
         };
 
         var data = JSON.parse(localStorage['data']);
@@ -59,8 +74,11 @@ $(document).ready(function() {
         if (!task){ return false; }
 
         output = '';
+
         output += '<li class="task">';
+
         output += task;
+
         output += '</li>';
 
         list.append(output);
@@ -155,15 +173,23 @@ $(document).ready(function() {
     });
 
     $('#swapper').on('click', function(){
+
         var todoWrapper = $('.todo-wrapper');
+
         var title = $('.todo-wrapper h4 span');
+
         $(todoWrapper).toggleClass('flipped');
+
         if ($(title).text() == 'To-Do'){
+
             $(title).text('Done');
+
         } else {
+
             $(title).text('To-Do');
+
         }
         
     });
 
-});
+}
