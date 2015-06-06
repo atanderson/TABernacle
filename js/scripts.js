@@ -23,6 +23,10 @@ $(document).ready(function() {
     //Handle the TODO functionality
     handleTodo();
 
+    loadCSS();
+
+    loadBackground();
+
     //Placeholder removal on focus
     $('input').on('focus', function(){
 

@@ -1,37 +1,57 @@
 var submitSearch = function(mode){
 
-    var searchquery = $('#search-input').val();
+    chrome.storage.sync.get({
 
-    if (!searchquery){return  false;};
+        modes: ''
 
-    var useMode = config.searchModes[mode];
+    }, function(items) {
 
-    var location = useMode.query[0] + encodeURIComponent(searchquery) + useMode.query[1];
+        console.log(items.modes);
 
-    var win = window.open(location);
+        var searchquery = $('#search-input').val();
+
+        if (!searchquery){return  false;};
+
+        var useMode = items.modes[mode];
+
+        console.log('usemode', useMode);
+        
+        var location = useMode[1] + encodeURIComponent(searchquery) + useMode[2];
+
+        var win = window.open(location);
+
+    });
 
 }
 
 var searchViaKey = function(input){
 
-    $(input).on('keydown', function(e){
+        chrome.storage.sync.get({
 
-        //Find the key pressed
-        var keyListener = e.keyCode;
+            modes: ''
 
-        for (var mode in config.searchModes){
+        }, function(items) {
 
-            var useMode = config.searchModes[mode];
+            $(input).on('keydown', function(e){
 
-            if(keyListener == useMode.hotkey){
+            //Find the key pressed
+            var keyListener = e.keyCode;
 
-                e.preventDefault();
+            for (var mode in items.modes){
 
-                submitSearch(mode);
+                var useMode = items.modes[mode];
 
+                if(keyListener == useMode[3]){
+
+                    e.preventDefault();
+
+                    submitSearch(mode);
+
+                }
+                
             }
-            
-        }
+
+        });
 
     });
 

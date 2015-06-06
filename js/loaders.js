@@ -1,124 +1,170 @@
 //Load the links defined in the config
 var loadLinks = function(set, scope){
 
-    //Get the array of links
-    linksArray = config.links[set];
+    chrome.storage.sync.get({
 
-    //Define the inital output to concatinate to
-    output = '';
+        links: ''
 
-    //Set a variable to interate over
-    var i = 0;
+    }, function(items) {
 
-    //Build a link
-    for (i; i < linksArray.length; i += 1 ){
+        //Get the array of links
+        for (linkArray in items.links){
 
-        output += '<li class="float">';
+            linksArray = items.links[linkArray];
 
-        output += '<a href="' + linksArray[i].value + '" title="' + linksArray[i].title + '">';
 
-        output += '<span class="fa-stack fa-lg">';   
+            //Define the inital output to concatinate to
+            output = '';
 
-        output += '<i class="fa fa-stop fa-stack-2x"></i>';    
+            output += '<li class="float">';
 
-        output += '<i class="fa fa-inverse ' + linksArray[i].icon + ' fa-stack-1x">' + linksArray[i].text + '</i>';   
+            output += '<a href="' + linksArray[4] + '" title="' + linksArray[1] + '">';
 
-        output += '<span>';
+            output += '<span class="fa-stack fa-lg">';   
 
-        output += '</a>';  
+            output += '<i class="fa fa-stop fa-stack-2x"></i>';    
 
-        output += '</li>';
+            output += '<i class="fa fa-inverse ' + linksArray[3] + ' fa-stack-1x">' + linksArray[2] + '</i>';   
 
-    }
+            output += '<span>';
 
-    //Append all the links to the scope
-    $(scope).append(output);
+            output += '</a>';  
+
+            output += '</li>';
+
+            var index = (Number(linksArray[0]) + 1)
+
+            //Append all the links to the scope
+            $('#linkset-' + index).append(output);
+
+        }
+
+    });
 
 };
 
 //Load the link containers defined in the config and append them to the page
 var loadLinkContainers = function(){
 
-    var i = 0;
+    chrome.storage.sync.get({
 
-    linkTitles = config.links.titles;
+        titles: ''
 
-    output = '';
+    }, function(items) {
 
-    for (i; i < linkTitles.length; i += 1 ){
+        var i = 0;
 
-        output += '<div class="module small clearfix links">';
+        linkTitles = items.titles;
 
-        output += '<h4>' + linkTitles[i] + '</h4>';
+        output = '';
 
-        output += '<ul id="linkset-' + (i + 1) + '" class="un-list">'
+        for (i; i < linkTitles.length; i += 1 ){
 
-        output += '</ul>'
+            output += '<div class="module small clearfix links">';
 
-        output += '</div>'
+            output += '<h4>' + linkTitles[i] + '</h4>';
 
-    }
+            output += '<ul id="linkset-' + (i + 1) + '" class="un-list">'
 
-    $('#link-module-wrapper').append(output);
+            output += '</ul>'
+
+            output += '</div>'
+
+        }
+
+        $('#link-module-wrapper').append(output);
+
+    });
 
 };
 
 //Load the search modes and append them to the page
 var loadSearchModes = function(){
 
-    var i = 0;
+    chrome.storage.sync.get({
 
-    for ( var mode in config.searchModes ){
+        modes: ''
 
-        var output = '';
+    }, function(items) {
 
-        modeIcon = config.searchModes[mode];
+        var i = 0;
 
-        if (modeIcon.button){
+        for (var mode in items.modes ){
 
-            output += '<li id="' + mode + '" class="float mode">';
+            var modeArray = items.modes[mode];
 
-            output += '<a class="icon search-mode" href="javascript:void(0)">';
+            var output = '';
 
-            output += modeIcon.label;
+            var button = modeArray[5];
 
-            output += '</a>';
+            if (button){
 
-            if (modeIcon.indicator){
+                output += '<li id="' + modeArray[0] + '" class="float mode">';
 
-                output += '<span class="fa-stack fa-lg indicator"><i class="fa fa-circle fa-stack-1x"></i>';
+                output += '<a class="icon search-mode" href="javascript:void(0)">';
 
-                output += '<i class="fa fa-inverse fa-stack-1x">' + modeIcon.indicator; + '</i>';
+                output += modeArray[0];
 
-                output += '<span>'
+                output += '</a>';
+
+                if (modeArray[4] != ''){
+
+                    output += '<span class="fa-stack fa-lg indicator"><i class="fa fa-circle fa-stack-1x"></i>';
+
+                    output += '<i class="fa fa-inverse fa-stack-1x">' + modeArray[4] + '</i>';
+
+                    output += '<span>'
+
+                }
+
+                output += '</li>'
 
             }
 
-            output += '</li>'
+            $('#search-modes').append(output);
 
         }
 
-        $('#search-modes').append(output);
-
-    }
+    });
 
 };
 
 //Load links and then append them to the link containers they are scoped to
 var setLinks = function(){
 
-    i = 0
-
-    for (var link in config.links){
-
-        if (link != 'titles'){
-
-            i++
-
-            loadLinks(link, '#linkset-' + i);
-
-        }
-
-    }
+    loadLinks();
 
 };
+
+var loadCSS = function(){
+
+    chrome.storage.sync.get({
+
+        customCSS: ''
+
+    }, function(items) {
+
+        $('head').append('<style>' + items.customCSS + '</style>')
+
+    });
+
+}
+
+var loadBackground = function(){
+
+    chrome.storage.sync.get({
+
+        bgImage: ''
+
+    }, function(items) {
+
+        $('body').css({
+
+            "background-size": "cover",
+            "background-image" : "url('" + items.bgImage + "')"
+
+        })
+
+    });
+
+}
