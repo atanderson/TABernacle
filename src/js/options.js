@@ -16,15 +16,13 @@ function save_options() {
     titles.push(modulesTitles[i].value);
   }
 
-  var links = {};
+  var links = [];
   for (var i = 0; i < modulesLinks.length; i++) {
-    var linkProps = [];
-    linkProps.push($(modulesLinks[i]).parents('[data-module]').attr('data-module'));
-    linkProps.push($(modulesLinks[i]).find('[data-value="title"]').val());
-    linkProps.push($(modulesLinks[i]).find('[data-value="text"]').val());
-    linkProps.push($(modulesLinks[i]).find('[data-value="icon"]').val());
-    linkProps.push($(modulesLinks[i]).find('[data-value="value"]').val());
-    links["link" + i] = linkProps;
+    var thisLink = {};
+    thisLink.title = $(modulesLinks[i]).find('[data-value="title"]').val();
+    thisLink.text = $(modulesLinks[i]).find('[data-value="text"]').val();
+    thisLink.icon = $(modulesLinks[i]).find('[data-value="icon"]').val();
+    thisLink.value = $(modulesLinks[i]).find('[data-value="value"]').val();
   }
 
   var linksNumbers = [];

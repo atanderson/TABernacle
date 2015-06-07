@@ -2,14 +2,8 @@ $(document).ready(function() {
 
     "use strict";
 
-    //Load the link containers and place them on the page
-    loadLinkContainers();
-
     //Load the search modes and place them on the page
     loadSearchModes();
-
-    //Load the links and place them in the link containers
-    setLinks();
 
     //Insert the calendar to its container
     insertCalendar('#calendar ul');

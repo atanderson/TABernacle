@@ -4,6 +4,16 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var zip = require('gulp-zip');
 var del = require('del');
+var browserify = require('gulp-browserify');
+var concat = require('gulp-concat');
+var minifyCss = require('gulp-minify-css');
+
+gulp.task('browserify', function() {
+    gulp.src('./src/js/react/*.js')
+        .pipe(browserify({transform: 'reactify'}))
+        .pipe(concat('main.js'))
+        .pipe(gulp.dest('./build/js'))
+});
 
 gulp.task('del', function() {
     del(['./dist/**/*', './build/**/*'] , function (err, paths) {
@@ -14,6 +24,7 @@ gulp.task('del', function() {
 gulp.task('sass', function() {
     gulp.src('./src/sass/*.scss')
         .pipe(sass().on('error', sass.logError))
+        .pipe(minifyCss({compatibility: 'ie8'}))
         .pipe(gulp.dest('./build/css'));
 });
 
@@ -34,7 +45,7 @@ gulp.task('css', function () {
 });
 
 gulp.task('move', function () {
-    gulp.src('./src/*')
+    gulp.src(['./src/*.html', './src/*.json'])
         .pipe(gulp.dest('./build'));
 });
 
@@ -42,11 +53,16 @@ gulp.task('sass:watch', function () {
     gulp.watch('./src/sass/**/*.scss', ['sass']);
 });
 
+gulp.task('watch', function () {
+    gulp.watch('./src/js/react/*.js', ['browserify'])
+});
+
 gulp.task('build', [
     'sass',
     'javascript',
     'css',
-    'move'
+    'move',
+    'browserify'
 ]);
 
 gulp.task('default', ['build']);
