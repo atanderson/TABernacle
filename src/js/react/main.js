@@ -26,8 +26,8 @@ var LinkModule = React.createClass({
         return (
             <div id="link-module-wrapper">
                 <div className="module small clearfix links">
-                    <h4>{this.props.data}</ h4>
-                    <LinkList />
+                    <h4>{this.props.title}</ h4>
+                    <LinkList data={this.props.data}/>
                 </div>
             </div>
         )
@@ -35,24 +35,8 @@ var LinkModule = React.createClass({
 });
 
 var LinkList = React.createClass({
-    componentDidMount: function(){
-        var self = this;
-        chrome.storage.sync.get({
-            links: ''
-        }, function(items){
-            console.log(items.links);
-            self.setState({
-                data: items.links
-            });
-        });
-    },
-    getInitialState: function() {
-        return {
-            data: []
-        }
-    },
     render: function() {
-        var links = this.state.data.map(function(link, i) {
+        var links = this.props.data.map(function(link, i) {
             return <ALink data={link} key={i} />
         });
         return (
@@ -132,10 +116,10 @@ var Links = React.createClass({
     componentDidMount: function(){
         var self = this;
         chrome.storage.sync.get({
-            titles: ''
+            linkData: ''
         }, function(items){
             self.setState({
-                data: items.titles
+                data: items.linkData
             });
         });
     },
@@ -145,9 +129,10 @@ var Links = React.createClass({
         }
     },
     render: function() {
-        var modules = this.state.data.map(function(module, i) {
-            return <LinkModule data={module} key={i} />
-        });
+        var modules = [];
+        for (module in this.state.data) {
+            modules.push(<LinkModule title={module} data={this.state.data[module]} />);
+        }
         return (
             <div className="links-wrapper clearfix">
                 <div className="col-left">

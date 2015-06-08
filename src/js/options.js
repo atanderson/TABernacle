@@ -5,24 +5,25 @@ function save_options() {
   var customCSS = document.getElementById('custom-css').value;
   var customBackground = document.getElementById('background-image').value;
 
-  var modulesTitles = $('.module-title');
-  var modulesLinks = $('.module-links .link');
+  var modules = $('.module');
   var linksNumber = $('.module-links-number');
   var modesNumber = $('#searchModes').val();
   var searchModes = $('.mode');
 
-  var titles = [];
-  for (var i = 0; i < modulesTitles.length; i++) {
-    titles.push(modulesTitles[i].value);
-  }
-
-  var links = [];
-  for (var i = 0; i < modulesLinks.length; i++) {
-    var thisLink = {};
-    thisLink.title = $(modulesLinks[i]).find('[data-value="title"]').val();
-    thisLink.text = $(modulesLinks[i]).find('[data-value="text"]').val();
-    thisLink.icon = $(modulesLinks[i]).find('[data-value="icon"]').val();
-    thisLink.value = $(modulesLinks[i]).find('[data-value="value"]').val();
+  var linkData = {};
+  for (var i = 0; i < modules.length; i++){
+    var title = $(modules[i]).find('.module-title').val();
+    var moduleLinks = $(modules[i]).find('.module-links .link');
+    var links = [];
+    for (var j = 0; j < moduleLinks.length; j++) {
+      var thisLink = {};
+      thisLink.title = $(moduleLinks[j]).find('[data-value="title"]').val();
+      thisLink.text = $(moduleLinks[j]).find('[data-value="text"]').val();
+      thisLink.icon = $(moduleLinks[j]).find('[data-value="icon"]').val();
+      thisLink.value = $(moduleLinks[j]).find('[data-value="value"]').val();
+      links.push(thisLink);
+    }
+    linkData[title] = links; 
   }
 
   var linksNumbers = [];
@@ -42,15 +43,12 @@ function save_options() {
     modes[$(searchModes[i]).find('[data-value="title"]').val()] = modeProps;
   }
 
-  console.log(modes);
-
   chrome.storage.sync.set({
     googleCalendarKey: calKey,
     googleCalendarID: calID,
     numberOfLinkAreas: moduleNumber,
-    titles: titles,
     linksNumbers: linksNumbers,
-    links: links,
+    linkData: linkData,
     numberOfModesAreas: modesNumber,
     modes: modes,
     customCSS: customCSS,
@@ -75,7 +73,7 @@ function restore_options() {
     numberOfLinkAreas: '',
     titles: [],
     linksNumbers: [],
-    links: [],
+    linkData: '',
     numberOfModesAreas: '',
     modes: [],
     customCSS: '',
@@ -87,6 +85,8 @@ function restore_options() {
     document.getElementById('searchModes').value = items.numberOfModesAreas;
     document.getElementById('custom-css').value = items.customCSS;
     document.getElementById('background-image').value = items.bgImage;
+
+    console.log(items.linkData);
 
     $('#link-modules').html('');
     $('#search-modes').html('');
