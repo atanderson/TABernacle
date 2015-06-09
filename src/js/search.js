@@ -6,23 +6,25 @@ var submitSearch = function(mode){
 
     }, function(items) {
 
-        console.log(items.modes);
-
         var searchquery = $('#search-input').val();
 
-        if (!searchquery){return  false;};
+        if (!searchquery){return  false;}
 
-        var useMode = items.modes[mode];
-
-        console.log('usemode', useMode);
+        var useMode = $.grep(items.modes, function(e){
+            return e.title === mode;
+        });
         
-        var location = useMode[1] + encodeURIComponent(searchquery) + useMode[2];
+        if (useMode[0].queryBefore === ''){
+            useMode[0].queryBefore = 'http://';
+        }
+        
+        var location = useMode[0].queryBefore + encodeURIComponent(searchquery) + useMode[0].queryafter;
 
         var win = window.open(location);
 
     });
 
-}
+};
 
 var searchViaKey = function(input){
 
@@ -36,26 +38,25 @@ var searchViaKey = function(input){
 
             //Find the key pressed
             var keyListener = e.keyCode;
+                var useMode = $.grep(items.modes, function(e){
+                    return e.hotkey == keyListener;
+                });
 
-            for (var mode in items.modes){
+                console.log(useMode[0]);
 
-                var useMode = items.modes[mode];
-
-                if(keyListener == useMode[3]){
+                if(useMode[0]){
 
                     e.preventDefault();
 
-                    submitSearch(mode);
+                    submitSearch(useMode[0].title);
 
-                }
-                
             }
 
         });
 
     });
 
-}
+};
 
 var searchViaButtons = function(buttonWrappers){
 

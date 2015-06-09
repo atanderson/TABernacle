@@ -31,16 +31,16 @@ function save_options() {
     linksNumbers.push(linksNumber[i].value);
   }
 
-  var modes = {};
+  var modes = [];
   for (var i = 0; i < searchModes.length; i++) {
-    var modeProps = [];
-    modeProps.push($(searchModes[i]).find('[data-value="title"]').val());
-    modeProps.push($(searchModes[i]).find('[data-value="query-before"]').val());
-    modeProps.push($(searchModes[i]).find('[data-value="query-after"]').val());
-    modeProps.push($(searchModes[i]).find('[data-value="hotkey"]').val());
-    modeProps.push($(searchModes[i]).find('[data-value="indicator"]').val());
-    modeProps.push($(searchModes[i]).find('[data-value="show"]').prop('checked'));
-    modes[$(searchModes[i]).find('[data-value="title"]').val()] = modeProps;
+    var thisMode = {};
+    thisMode.title = $(searchModes[i]).find('[data-value="title"]').val();
+    thisMode.queryBefore = $(searchModes[i]).find('[data-value="query-before"]').val();
+    thisMode.queryafter = $(searchModes[i]).find('[data-value="query-after"]').val();
+    thisMode.hotkey = $(searchModes[i]).find('[data-value="hotkey"]').val();
+    thisMode.indicator = $(searchModes[i]).find('[data-value="indicator"]').val();
+    thisMode.show = $(searchModes[i]).find('[data-value="show"]').prop('checked');
+    modes.push(thisMode);
   }
 
   chrome.storage.sync.set({

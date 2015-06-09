@@ -3,8 +3,7 @@ $(document).ready(function() {
     "use strict";
 
     //Load the search modes and place them on the page
-    loadSearchModes();
-
+    
     //Insert the calendar to its container
     insertCalendar('#calendar ul');
 

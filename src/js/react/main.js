@@ -14,10 +14,55 @@ var Search = React.createClass({
 });
 
 var SearchModes = React.createClass({
+    componentDidMount: function() {
+        var self = this;
+        chrome.storage.sync.get({
+            modes: ''
+        }, function(items){
+            self.setState({
+                data: items.modes
+            })
+        });
+    },
+    getInitialState: function() {
+        return {
+            data: []
+        }
+    },
     render: function() {
+        var modes = this.state.data.map(function(mode, i){
+            return <Mode data={mode} key={i} />
+        });
         return (
-            <ul id="search-modes" className="un-list search-modes"></ul>
+            <ul id="search-modes" className="un-list search-modes">
+                {modes}
+            </ul>
         )
+    }
+});
+
+var Mode = React.createClass({
+    render: function(){
+        if(this.props.data.indicator != ''){
+            var indicator = <span className="fa-stack fa-lg indicator">
+                                <i className="fa fa-circle fa-stack-1x"></i>
+                                <i className="fa fa-inverse fa-stack-1x">{this.props.data.indicator}</i>
+                            </span>
+        } else {
+            var indicator = null;
+        }
+        if(this.props.data.show) {
+            return (
+                <li id={this.props.data.title} className="float mode">
+                    <a className="icon search-mode" href="#">
+                        {this.props.data.title}
+                    </a>
+                    {indicator}
+                </li>
+            )
+        } else {
+            return false;
+        }
     }
 });
 
