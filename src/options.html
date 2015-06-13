@@ -7,53 +7,8 @@
 </head>
 <body>
 
-<div class="container">
+<div id="options"></div>
+<script src="js/options.js"></script>
 
-    <h1>TABernacle Settings</h1>
-
-    <form id="calendar-settings" class="col-md-4">
-
-        <div class="form-group">
-            <label for="calID">Calendar ID</label>
-            <input id="calID" class="form-control" type="text">
-        </div>
-
-        <div class="form-group">
-            <label for="cakKey">Calendar API Key</label>
-            <input id="calKey" class="form-control" type="text">
-        </div>
-
-    </form>
-
-    <form id="link-settings" class="col-md-4">
-        <label for="linkAreas">Number of link areas</label>
-        <input id="linkAreas" class="form-control" type="number"><hr>
-        <div id="link-modules"></div>
-    </form>
-    
-    <form id="link-settings" class="col-md-4">
-        <label for="searchModes">Number of search modes</label>
-        <input id="searchModes" class="form-control" type="number"><hr>
-        <div id="search-modes"></div>
-    </form>
-    
-    <form id="css-settings" class="col-md-6">
-        <label for="custom-css">Custom CSS</label>
-        <textarea id="custom-css" class="form-control"></textarea>
-    </form>
-    
-    <form id="css-settings" class="col-md-6">
-        <label for="custom-css">Backgound Image</label>
-        <input id="background-image" class="form-control" type="text"></input>
-    </form>
-    
-    <div id="save-settings" class="col-md-12">
-        <h2 id="status"></h2>
-        <button id="save" class="btn btn-success">Save</button>
-    </div>
-
-<script type="text/javascript" src="js/options.js"></script>
-
-</div>
 </body>
 </html>

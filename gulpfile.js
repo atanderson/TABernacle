@@ -11,7 +11,7 @@ var minifyCss = require('gulp-minify-css');
 gulp.task('browserify', function() {
     gulp.src('./src/js/react/*.js')
         .pipe(browserify({transform: 'reactify'}))
-        .pipe(concat('main.js'))
+        //.pipe(concat('main.js'))
         .pipe(gulp.dest('./build/js'))
 });
 
