@@ -1,6 +1,10 @@
 /** @jsx React.DOM */
 
-$(document).ready(function() {
+//TODO: move to separate file? Useful on the main page as well.
+//For debugging. Called in the console as needed.
+window.logStorage = function(){
+
+    //Load these as default when their values are not present (can prevent data type mismatch)
     var linkDefault = {
         'Link Area': [{
             'title': '',
@@ -8,34 +12,39 @@ $(document).ready(function() {
             'text': '',
             'value': ''
         }]
-    };
-    var modeDefault = [{
-            'hotkey': '',
-            'indicator': '',
-            'queryBefore': '',
-            'queryafter': '',
-            'show': '',
-            'title': ''
-        }];
-  chrome.storage.sync.get({
-    googleCalendarID: '',
-    googleCalendarKey: '',
-    linkData: linkDefault,
-    modes: modeDefault,
-    customCSS: '',
-    bgImage: ''
+    }, 
+    modeDefault = [{
+        'hotkey': '',
+        'indicator': '',
+        'queryBefore': '',
+        'queryafter': '',
+        'show': '',
+        'title': ''
+    }];
+
+    //Basic storage grabber
+    chrome.storage.sync.get({
+        googleCalendarID: '',
+        googleCalendarKey: '',
+        linkData: linkDefault,
+        modes: modeDefault,
+        customCSS: '',
+        bgImage: ''
     }, function(items) {
-      console.log("calID", items.googleCalendarID);
-      console.log("calKey", items.googleCalendarKey);
-      console.log("linkData", items.linkData);
-      console.log("modes", items.modes);
-      console.log("customCSS", items.customCss);
-      console.log("bgImage", items.bgImage);
+        console.log("allData", items);
+        console.log("calID", items.googleCalendarID);
+        console.log("calKey", items.googleCalendarKey);
+        console.log("linkData", items.linkData);
+        console.log("modes", items.modes);
+        console.log("customCSS", items.customCss);
+        console.log("bgImage", items.bgImage);
     });
-});
+
+};
 
 var React = require('react');
 
+//Main container for the options page
 var Options = React.createClass({
     render: function() {
         return (
@@ -47,153 +56,153 @@ var Options = React.createClass({
                 <CssSettings />
                 <BgSettings />
             </div>
-        )
+        );
     }
 });
 
+//All of the settings/inputs for the Google Calendar
 var CalendarSettings = React.createClass({
+    //Whenever input value changes, alter state and save value to storage
     handleChange: function(name, event) {
-
-        //TODO: rename the keys to be the same between chrome storage and state
-
+        //Create empty object to store state info to avoid object syntax issues
         var state = {};
-        var stateName;
-        if (name == 'googleCalendarKey') {
-            stateName = "calKey";
-        } else if (name == 'googleCalendarID') {
-            stateName = 'calID';
-        }
-
-        console.log('calChange', event.target.value)
-        state[stateName] = event.target.value;
+        state[name] = event.target.value;
         this.setState(state);
-
-        var setting = {};
-        setting[name] = event.target.value;
-        chrome.storage.sync.set(setting);
+        chrome.storage.sync.set(state);
     },
+    //On mount, load chrome storage and set state to stored data
     componentDidMount: function () {
+        //Make sure we are binding to the correct element
         var self = this;
         chrome.storage.sync.get({
             googleCalendarKey: '',
             googleCalendarID: ''
         }, function(items){
             self.setState({
-                calKey: items.googleCalendarKey,
-                calID: items.googleCalendarID
-            })
+                googleCalendarKey: items.googleCalendarKey,
+                googleCalendarID: items.googleCalendarID
+            });
         });
     },
+    //Load blank component initially, needed because google storage retreval is async
     getInitialState: function() {
         return {
-            calKey: '',
-            calID: ''
+            googleCalendarKey: '',
+            googleCalendarID: ''
         }
     },
+    //Render two inputs with labels
     render: function() {
         return (
             <form id="calendar-settings" className="col-md-4">
+
                 <h2>Calendar Settings</h2>
+
                 <div className="form-group">
                     <label htmlFor="calID">Calendar ID</label>
-                    <input id="calID" className="form-control" type="text" onChange={this.handleChange.bind(this, 'googleCalendarID')} value={this.state.calID} />
+                    <input id="calID" className="form-control" type="text" onChange={this.handleChange.bind(this, 'googleCalendarID')} value={this.state.googleCalendarID} />
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="cakKey">Calendar API Key</label>
-                    <input id="calKey" className="form-control" type="text" onChange={this.handleChange.bind(this, 'googleCalendarKey')} value={this.state.calKey} />
+                    <label htmlFor="calKey">Calendar API Key</label>
+                    <input id="calKey" className="form-control" type="text" onChange={this.handleChange.bind(this, 'googleCalendarKey')} value={this.state.googleCalendarKey} />
                 </div>
+
             </form>
-        )
+        );
     }
 });
 
 var LinkSettings = React.createClass({
     addArea: function (){
-        console.log('add area');
-        var self = this;
-        var state = self.state;
-        state.data['New Area'] = [];
-        stateData = state.data;
-        self.setState(stateData);
+        //Make sure we are binding to the correct element
+        var self = this,
+        //Store the state (which should be immutable) as a new variable
+        state = self.state.data;
+
+        //Create an empty array for the new area
+        state['New Area'] = [];
+        self.setState(state);
+
+        //Empty object for chrome storage to prevent syntax issues
         var chromeData = {};
-        chromeData.linkData = state.data;
+        chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     removeArea: function(area){
-        console.log('area name', area);
-        console.log('remove area');
-        var self = this;
-        var state = self.state;
-        delete state.data[area];
-        stateData = state.data;
-        self.setState(stateData);
+        var self = this,
+        state = self.state.data;
+
+        //Remove the link area object and it's associated array
+        delete state[area];
+        self.setState(state);
+
         var chromeData = {};
-        chromeData.linkData = state.data;
+        chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     addLink: function(area){
-        console.log('add link');
-        console.log(area);
-        var self = this;
-        var state = self.state;
-        state.data[area].push({
+        var self = this,
+        state = self.state.data;
+
+        //Add a blank link object to the link area array
+        state[area].push({
             'title' : '',
             'icon': '',
             'text': '',
             'value': ''
-        })
-        stateData = state.data;
-        self.setState(stateData);
+        });
+        self.setState(state);
+
         var chromeData = {};
-        chromeData.linkData = state.data;
+        chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     removeLink: function(link){
-        console.log('index', link.index);
-        console.log('area', link.linkArea);
-        console.log('remove link');
         var self = this;
-        var state = self.state;
-        state.data[link.linkArea].splice(link.index, 1);
-        stateData = state.data;
-        self.setState(stateData);
+        var state = self.state.data;
+
+        //Remove the link of the specified index from the specified linkarea
+        state[link.linkArea].splice(link.index, 1);
+
+        self.setState(state);
+
         var chromeData = {};
         chromeData.linkData = state.data;
         chrome.storage.sync.set(chromeData);
     },
     handleChange: function(name, event) {
-        var self = this;
-        var linkArea = name.linkArea;
-        var index = name.index;
-        var value = name.value;
-        var state = self.state;
-        state.data[linkArea][index][value] = event.target.value;
-        var stateData = state.data
-        self.setState({
-            stateData
-        });
+        var self = this,
+        linkArea = name.linkArea,
+        index = name.index,
+        value = name.value,
+        state = self.state.data;
+
+        state[linkArea][index][value] = event.target.value;
+        self.setState({state});
+
         var chromeData = {};
-        chromeData.linkData = state.data;
+        chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     handleTitle: function(name, event){
 
         //TODO ordering is off on page refresh?
+        //Might need to use array to garuntee order
+
+        var self = this,
+        val = event.target.value,
+        state = self.state.data,
+        thisArea = state[name];
+        delete state[name];
         
-        var self = this;
-        var state = {};
-        var val = event.target.value
-        var state = self.state;
-        var thisArea = state.data[name];
-        delete state.data[name];
-        state.data[event.target.value] = thisArea;
-        var stateData = state.data;
+        state[event.target.value] = thisArea;
         self.setState({
-            stateData
+            state
         });
+
         var chromeData = {};
-        chromeData.linkData = state.data;
+        chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     componentDidMount: function () {
@@ -363,7 +372,6 @@ var ModeSettings = React.createClass({
     },
     render: function() {
         var self = this;
-        console.log('data', this.state);
         var modes = this.state.data.map(function(mode, i){
             return <ModeForm data={mode} removeMode={self.removeMode} onChange={self.handleChange} index={i} key={i} />
         });
