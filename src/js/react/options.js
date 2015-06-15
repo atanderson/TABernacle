@@ -177,6 +177,25 @@ var LinkSettings = React.createClass({
         chromeData.linkData = state.data;
         chrome.storage.sync.set(chromeData);
     },
+    handleTitle: function(name, event){
+
+        //TODO ordering is off on page refresh?
+        
+        var self = this;
+        var state = {};
+        var val = event.target.value
+        var state = self.state;
+        var thisArea = state.data[name];
+        delete state.data[name];
+        state.data[event.target.value] = thisArea;
+        var stateData = state.data;
+        self.setState({
+            stateData
+        });
+        var chromeData = {};
+        chromeData.linkData = state.data;
+        chrome.storage.sync.set(chromeData);
+    },
     componentDidMount: function () {
         var self = this;
         var linkDefault = {
@@ -212,7 +231,7 @@ var LinkSettings = React.createClass({
         var modules = [];
         var i = 0;
         for (module in this.state.data) {
-            modules.push(<LinkWrapper removeArea={this.removeArea} addLink={this.addLink} removeLink={this.removeLink} title={module} key={i} onChange={this.handleChange} data={this.state.data[module]} />);
+            modules.push(<LinkWrapper removeArea={this.removeArea} handleTitle={this.handleTitle} addLink={this.addLink} removeLink={this.removeLink} title={module} key={i} onChange={this.handleChange} data={this.state.data[module]} />);
             i++;
         }
         return (
@@ -235,7 +254,7 @@ var LinkWrapper = React.createClass({
             <div>
                 <a className="btn btn-danger" onClick={this.props.removeArea.bind(null, this.props.title)}>remove link area</a>
                 <label htmlFor="title">Link Area Title</label>
-                <input id="title" type="text" title={this.props.title} onChange={this.props.onChange.bind(null, this.props.data )} className="form-control" data-prop="title" value={this.props.title}></input>
+                <input id="title" type="text" title={this.props.title} onChange={this.props.handleTitle.bind(null, this.props.title )} className="form-control" data-prop="title" value={this.props.title}></input>
                 {links}
                 <a className="btn btn-success" onClick={this.props.addLink.bind(null, this.props.title)}>add link</a>
                 <hr />
@@ -388,22 +407,74 @@ var ModeForm = React.createClass({
 });
 
 var CssSettings = React.createClass({
+    handleChange: function(event) {
+
+        //TODO: rename the keys to be the same between chrome storage and state
+        var state = {};
+        var val = event.target.value
+        this.setState({ customCSS: val });
+
+        var setting = {};
+        setting.customCSS = val;
+        chrome.storage.sync.set(setting);
+    },
+    componentDidMount: function () {
+        var self = this;
+        chrome.storage.sync.get({
+            customCSS: ''
+        }, function(items){
+            self.setState({
+                customCSS: items.customCSS
+            })
+        });
+    },
+    getInitialState: function() {
+        return {
+            customCSS: ''
+        }
+    },
     render: function() {
         return (
             <form id="css-settings" className="col-md-4">
                 <label htmlFor="custom-css">Custom CSS</label>
-                <textarea id="custom-css" className="form-control"></textarea>
+                <textarea id="custom-css" onChange={this.handleChange} className="form-control" value={this.state.customCSS}></textarea>
             </form>
         )
     }
 });
 
 var BgSettings = React.createClass({
+    handleChange: function(event) {
+
+        //TODO: rename the keys to be the same between chrome storage and state
+        var state = {};
+        var val = event.target.value
+        this.setState({ bgImage: val });
+
+        var setting = {};
+        setting.bgImage = val;
+        chrome.storage.sync.set(setting);
+    },
+    componentDidMount: function () {
+        var self = this;
+        chrome.storage.sync.get({
+            bgImage: ''
+        }, function(items){
+            self.setState({
+                bgImage: items.bgImage
+            })
+        });
+    },
+    getInitialState: function() {
+        return {
+            customCSS: '',
+        }
+    },
     render: function() {
         return (
             <form id="bg-settings" className="col-md-4">
                 <label htmlFor="custom-css">Backgound Image</label>
-                <input id="background-image" className="form-control" type="text"></input>
+                <input id="background-image" onChange={this.handleChange} className="form-control" type="text" value={this.state.bgImage}></input>
             </form>
         )
     }
