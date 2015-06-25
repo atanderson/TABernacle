@@ -46,17 +46,48 @@ var React = require('react');
 
 //Main container for the options page
 var Options = React.createClass({
+    getInitialState: function(){
+        return { settingEditable: 'CalendarSettings'};
+    },
+    swapModule: function(name){
+        this.setState( {settingEditable: name} );
+    },
     render: function() {
+        var settingArea;
+        if (this.state.settingEditable == 'CalendarSettings') {
+            settingArea = <CalendarSettings />;
+        } else if (this.state.settingEditable == 'LinkSettings') {
+            settingArea = <LinkSettings />;
+        } else if (this.state.settingEditable == 'ModeSettings') {
+            settingArea = <ModeSettings />;
+        } else if (this.state.settingEditable == 'CssSettings') {
+            settingArea = <CssSettings />;
+        } else if (this.state.settingEditable == 'BgSettings') {
+            settingArea = <BgSettings />;
+        }
         return (
             <div className="container">
                 <h1>TABernacle Settings</h1>
-                <CalendarSettings />
-                <LinkSettings />
-                <ModeSettings />
-                <CssSettings />
-                <BgSettings />
+                <SettingsToggles onClick={this.swapModule} />
+                <div id='setting-wrapper'>
+                    {settingArea}
+                </div>
             </div>
         );
+    }
+});
+
+var SettingsToggles = React.createClass({
+    render: function() {
+        return(
+            <ul>
+                <li><a onClick={this.props.onClick.bind(null, 'CalendarSettings')} >Calendar</a></li>
+                <li><a onClick={this.props.onClick.bind(null, 'LinkSettings')} >Links</a></li>
+                <li><a onClick={this.props.onClick.bind(null, 'ModeSettings')} >Search Modes</a></li>
+                <li><a onClick={this.props.onClick.bind(null, 'CssSettings')} >Custom CSS</a></li>
+                <li><a onClick={this.props.onClick.bind(null, 'BgSettings')} >Background Image</a></li>
+            </ul>
+        )
     }
 });
 
