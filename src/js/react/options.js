@@ -6,7 +6,7 @@ window.logStorage = function(){
 
     //Load these as default when their values are not present (can prevent data type mismatch)
     var linkDefault = {
-        'Link Area': [{
+        'Link Area Title': [{
             'title': '',
             'icon': '',
             'text': '',
@@ -49,7 +49,8 @@ var Options = React.createClass({
     getInitialState: function(){
         return { settingEditable: 'CalendarSettings'};
     },
-    swapModule: function(name){
+    swapModule: function(name, event){
+        console.log(event.target);
         this.setState( {settingEditable: name} );
     },
     render: function() {
@@ -67,8 +68,10 @@ var Options = React.createClass({
         }
         return (
             <div className="container">
-                <h1>TABernacle Settings</h1>
-                <SettingsToggles onClick={this.swapModule} />
+                <nav className="navbar navbar-default">
+                    <div className="navbar-header"><span className="navbar-brand">TABernacle Settings</span></div>
+                    <SettingsToggles onClick={this.swapModule} />
+                </nav>
                 <div id='setting-wrapper'>
                     {settingArea}
                 </div>
@@ -80,12 +83,12 @@ var Options = React.createClass({
 var SettingsToggles = React.createClass({
     render: function() {
         return(
-            <ul>
-                <li><a onClick={this.props.onClick.bind(null, 'CalendarSettings')} >Calendar</a></li>
-                <li><a onClick={this.props.onClick.bind(null, 'LinkSettings')} >Links</a></li>
-                <li><a onClick={this.props.onClick.bind(null, 'ModeSettings')} >Search Modes</a></li>
-                <li><a onClick={this.props.onClick.bind(null, 'CssSettings')} >Custom CSS</a></li>
-                <li><a onClick={this.props.onClick.bind(null, 'BgSettings')} >Background Image</a></li>
+            <ul className="nav navbar-nav">
+                <li><a href="#" onClick={this.props.onClick.bind(null, 'CalendarSettings')} >Calendar</a></li>
+                <li><a href="#" onClick={this.props.onClick.bind(null, 'LinkSettings')} >Links</a></li>
+                <li><a href="#" onClick={this.props.onClick.bind(null, 'ModeSettings')} >Search Modes</a></li>
+                <li><a href="#" onClick={this.props.onClick.bind(null, 'CssSettings')} >Custom CSS</a></li>
+                <li><a href="#" onClick={this.props.onClick.bind(null, 'BgSettings')} >Background Image</a></li>
             </ul>
         )
     }
@@ -126,8 +129,6 @@ var CalendarSettings = React.createClass({
     render: function() {
         return (
             <form id="calendar-settings" className="col-md-4">
-
-                <h2>Calendar Settings</h2>
 
                 <div className="form-group">
                     <label htmlFor="calID">Calendar ID</label>
@@ -239,7 +240,7 @@ var LinkSettings = React.createClass({
     componentDidMount: function () {
         var self = this;
         var linkDefault = {
-            'Link Area': [{
+            'Link Area Title': [{
                 'title': '',
                 'icon': '',
                 'text': '',
@@ -256,7 +257,7 @@ var LinkSettings = React.createClass({
     },
     getInitialState: function() {
         var linkDefault = {
-            'Link Area': [{
+            'Link Area Title': [{
                 'title': '',
                 'icon': '',
                 'text': '',
@@ -275,9 +276,9 @@ var LinkSettings = React.createClass({
             i++;
         }
         return (
-            <div className="col-md-4">
-                <a className="btn btn-success" onClick={this.addArea}>add link area</a>
-                <h2>Link Settings</h2>
+            <div className="col-sm-12">
+                <a className="btn btn-success" onClick={this.addArea}>new link area</a>
+                <hr />
                 <form id="link-settings">{modules}</form>
             </div>
         )
@@ -291,13 +292,23 @@ var LinkWrapper = React.createClass({
             return <LinkForm data={link} key={i} index={i} removeLink={self.props.removeLink} onChange={self.props.onChange} title={self.props.title} />
         });
         return (
-            <div>
-                <a className="btn btn-danger" onClick={this.props.removeArea.bind(null, this.props.title)}>remove link area</a>
-                <label htmlFor="title">Link Area Title</label>
-                <input id="title" type="text" title={this.props.title} onChange={this.props.handleTitle.bind(null, this.props.title )} className="form-control" data-prop="title" value={this.props.title}></input>
+            <div className="row">
+                <div className="col-sm-12">
+                    <div className="btn-group pull-right" role="group">
+                        <button className="btn btn-success" onClick={this.props.addLink.bind(null, this.props.title)}>add link</button>
+                        <button className="btn btn-danger" onClick={this.props.removeArea.bind(null, this.props.title)}>remove area</button>
+                    </div>
+                    <div className="input-group">
+                        <input id="title" type="text" title={this.props.title} onChange={this.props.handleTitle.bind(null, this.props.title )} className="form-control" data-prop="title" value={this.props.title}></input>
+                        <span className="input-group-btn">
+                           <button className="btn btn-default" type="button"><i className="fa fa-info-circle"></i></button>
+                        </span>
+                    </div>
+                </div>
                 {links}
-                <a className="btn btn-success" onClick={this.props.addLink.bind(null, this.props.title)}>add link</a>
-                <hr />
+                <div className="col-sm-12">
+                    <hr />
+                </div>   
             </div>
         )
     }
@@ -306,19 +317,24 @@ var LinkWrapper = React.createClass({
 var LinkForm = React.createClass({
     render: function() {
         return (
-            <div className="form-group">
-                <a className="btn btn-danger" onClick={this.props.removeLink.bind(null, { 'index' : this.props.index, 'linkArea' : this.props.title })}>remove link </a>
-                <label htmlFor="title">Title</label>
-                <input id="title" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'title', 'index': this.props.index})} type="text" className="form-control" data-prop="title" value={this.props.data.title}></input>
-                
-                <label htmlFor="icon">Icon</label>
-                <input id="icon" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'icon', 'index': this.props.index})} type="text" className="form-control" data-prop="icon" value={this.props.data.icon}></input>
-                
-                <label htmlFor="text">Text</label>
-                <input id="text" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'text', 'index': this.props.index})} type="text" className="form-control" data-prop="text" value={this.props.data.text}></input>
-                
-                <label htmlFor="value">Value</label>
-                <input id="value" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'value', 'index': this.props.index})} type="text" className="form-control" data-prop="value" value={this.props.data.value}></input>
+            <div className="form-group col-md-4">
+                <div className="inner panel panel-default">
+                    <div className="panel-heading col-sm-12">
+                        <div className="row">
+                            <div className="col-sm-10">
+                                <input id="title" placeholder="title" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'title', 'index': this.props.index})} type="text" className="form-control" data-prop="title" value={this.props.data.title}></input>
+                            </div>
+                            <div className="col-sm-2">
+                                <a className="btn btn-danger pull-right btn-padded" onClick={this.props.removeLink.bind(null, { 'index' : this.props.index, 'linkArea' : this.props.title })}>x</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="panel-body">
+                        <input id="icon" placeholder="icon" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'icon', 'index': this.props.index})} type="text" className="form-control" data-prop="icon" value={this.props.data.icon}></input>
+                        <input id="text" placeholder="text" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'text', 'index': this.props.index})} type="text" className="form-control" data-prop="text" value={this.props.data.text}></input>
+                        <input id="value" placeholder="value" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'value', 'index': this.props.index})} type="text" className="form-control" data-prop="value" value={this.props.data.value}></input>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -408,7 +424,6 @@ var ModeSettings = React.createClass({
         });
         return (
             <form id="link-settings" className="col-md-4">
-            <h2>Search Modes</h2>
             <a onClick={this.addMode} className='btn btn-success'>add mode<i className='fa fa-plus'></i></a>
             {modes}
             </form>
