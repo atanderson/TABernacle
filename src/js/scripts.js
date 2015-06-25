@@ -30,7 +30,7 @@ $(document).ready(function() {
     //Placeholder insertion on focus
     $('input').on('blur', function(){
 
-        var placeholder = $(this).attr('data-placeholder')
+        var placeholder = $(this).attr('data-placeholder');
         $(this).attr('placeholder', placeholder);
 
     });

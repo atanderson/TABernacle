@@ -68,4 +68,4 @@ var searchViaButtons = function(buttonWrappers){
 
     });
 
-}
+};

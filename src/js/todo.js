@@ -8,7 +8,7 @@ var handleTodo = function(){
 
             localStorage.setItem('data', JSON.stringify([]));
 
-        };
+        }
 
         var rdata = JSON.parse(localStorage['data']);
 
@@ -20,7 +20,7 @@ var handleTodo = function(){
 
             output += value;
 
-            output += '</li>'
+            output += '</li>';
 
             $('#todo-list').append(output);
 
@@ -32,7 +32,7 @@ var handleTodo = function(){
 
             localStorage.setItem('doneList', JSON.stringify([]));
 
-        };
+        }
 
         var ddata = JSON.parse(localStorage['doneList']);
 
@@ -44,14 +44,13 @@ var handleTodo = function(){
 
             output += value;
 
-
-            output += '</li>'
+            output += '</li>';
 
             $('#done-list').append(output);
 
         });
 
-    }
+    };
 
     loadList();
 
@@ -63,7 +62,7 @@ var handleTodo = function(){
 
             localStorage.setItem('data', JSON.stringify([]));
 
-        };
+        }
 
         var data = JSON.parse(localStorage['data']);
 
@@ -89,7 +88,7 @@ var handleTodo = function(){
 
         $('#todo-field').val('');
 
-    }
+    };
 
     $('#submit-todo').on('click', function(){
 
@@ -138,7 +137,7 @@ var handleTodo = function(){
             localStorage.setItem(localArray, JSON.stringify(data));
 
         });
-    }
+    };
 
     var handleDone = function(doneItem){
 
@@ -158,11 +157,11 @@ var handleTodo = function(){
 
         localStorage.setItem('doneList', JSON.stringify(data));
 
-    }
+    };
 
     removeFromArray('#done-list', 'li', 'doneList');
 
-    removeFromArray('#todo-list', 'li', 'data')
+    removeFromArray('#todo-list', 'li', 'data');
 
     $("#todo-list").on('click', 'li', function(){
 
@@ -192,4 +191,4 @@ var handleTodo = function(){
         
     });
 
-}
+};

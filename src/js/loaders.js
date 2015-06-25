@@ -6,11 +6,11 @@ var loadCSS = function(){
 
     }, function(items) {
 
-        $('head').append('<style>' + items.customCSS + '</style>')
+        $('head').append('<style>' + items.customCSS + '</style>');
 
     });
 
-}
+};
 
 var loadBackground = function(){
 
@@ -25,8 +25,8 @@ var loadBackground = function(){
             "background-size": "cover",
             "background-image" : "url('" + items.bgImage + "')"
 
-        })
+        });
 
     });
 
-}
+};
