@@ -175,8 +175,10 @@ var Links = React.createClass({
     },
     render: function() {
         var modules = [];
+        var i = 0;
         for (module in this.state.data) {
-            modules.push(<LinkModule title={module} data={this.state.data[module]} />);
+            modules.push(<LinkModule title={module} data={this.state.data[module]} key={i} />);
+            i++;
         }
         return (
             <div className="links-wrapper clearfix">
