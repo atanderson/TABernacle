@@ -248,6 +248,7 @@ body{
   width: 70%;
 }
 
+//this is all pretty hacky....
 // _Todo List
 .todo-field{
   position:absolute;
@@ -277,6 +278,11 @@ li.task{
     &:nth-of-type(1){
       display: block;
     }
+  }
+
+  .todo-inner{
+    height: 100%;
+    margin-top: -3em;
   }
 
   &.flipped form{

@@ -129,7 +129,7 @@ var Todo = React.createClass({
 var TodoForm = React.createClass({
     render: function() {
         return (
-            <div>
+            <div className="todo-inner">
                 <form>
                     <input id="todo-field" className="todo-field" type="text" placeholder="enter a to-do item" data-placeholder="enter a to-do item" />
                     <ul id="todo-list" className="todo-list"></ul>
