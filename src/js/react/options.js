@@ -5,14 +5,26 @@
 window.logStorage = function(){
 
     //Load these as default when their values are not present (can prevent data type mismatch)
-    var linkDefault = {
-        'Link Area Title': [{
-            'title': '',
-            'icon': '',
-            'text': '',
-            'value': ''
-        }]
-    }, 
+    var linkDefault = [
+        {   
+            'title': 'Link Area title',
+            'links': [{
+                'title': 'test',
+                'icon': '',
+                'text': '',
+                'value': ''
+            }]
+        },
+        {
+            'title': 'Link Area title2',
+            'links': [{
+                'title': 'test2',
+                'icon': '',
+                'text': '',
+                'value': ''
+            }]
+        },
+    ],
     modeDefault = [{
         'hotkey': '',
         'indicator': '',
@@ -152,8 +164,13 @@ var LinkSettings = React.createClass({
         //Store the state (which should be immutable) as a new variable
         state = self.state.data;
 
+        var newArea = {   
+            'title': 'New Area',
+            'links': []
+        };
+
         //Create an empty array for the new area
-        state['New Area'] = [];
+        state.push(newArea);
         self.setState(state);
 
         //Empty object for chrome storage to prevent syntax issues
@@ -161,24 +178,24 @@ var LinkSettings = React.createClass({
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
-    removeArea: function(area){
+    removeArea: function(index){
         var self = this,
         state = self.state.data;
 
         //Remove the link area object and it's associated array
-        delete state[area];
+        state.splice(index , 1);
         self.setState(state);
 
         var chromeData = {};
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
-    addLink: function(area){
+    addLink: function(index){
         var self = this,
         state = self.state.data;
 
         //Add a blank link object to the link area array
-        state[area].push({
+        state[index].links.push({
             'title' : '',
             'icon': '',
             'text': '',
@@ -195,12 +212,12 @@ var LinkSettings = React.createClass({
         var state = self.state.data;
 
         //Remove the link of the specified index from the specified linkarea
-        state[link.linkArea].splice(link.index, 1);
+        state[link.linkArea].links.splice(link.index, 1);
 
         self.setState(state);
 
         var chromeData = {};
-        chromeData.linkData = state.data;
+        chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     handleChange: function(name, event) {
@@ -210,25 +227,23 @@ var LinkSettings = React.createClass({
         value = name.value,
         state = self.state.data;
 
-        state[linkArea][index][value] = event.target.value;
+        state[linkArea].links[index][value] = event.target.value;
         self.setState({state});
 
         var chromeData = {};
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
-    handleTitle: function(name, event){
+    handleTitle: function(index, event){
 
         //TODO ordering is off on page refresh?
         //Might need to use array to garuntee order
 
         var self = this,
         val = event.target.value,
-        state = self.state.data,
-        thisArea = state[name];
-        delete state[name];
+        state = self.state.data;
         
-        state[event.target.value] = thisArea;
+        state[index].title = val;
         self.setState({
             state
         });
@@ -239,14 +254,26 @@ var LinkSettings = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        var linkDefault = {
-            'Link Area Title': [{
-                'title': '',
-                'icon': '',
-                'text': '',
-                'value': ''
-            }]
-        };
+        var linkDefault = [
+            {   
+                'title': 'Link Area title',
+                'links': [{
+                    'title': 'test',
+                    'icon': '',
+                    'text': '',
+                    'value': ''
+                }]
+            },
+            {
+                'title': 'Link Area title2',
+                'links': [{
+                    'title': 'test2',
+                    'icon': '',
+                    'text': '',
+                    'value': ''
+                }]
+            }
+        ];
         chrome.storage.sync.get({
             linkData: linkDefault
         }, function(items){
@@ -256,25 +283,35 @@ var LinkSettings = React.createClass({
         });
     },
     getInitialState: function() {
-        var linkDefault = {
-            'Link Area Title': [{
-                'title': '',
-                'icon': '',
-                'text': '',
-                'value': ''
-            }]
-        };
+        var linkDefault = [
+            {   
+                'title': 'Link Area title',
+                'links': [{
+                    'title': 'test',
+                    'icon': '',
+                    'text': '',
+                    'value': ''
+                }]
+            },
+            {
+                'title': 'Link Area title2',
+                'links': [{
+                    'title': 'test2',
+                    'icon': '',
+                    'text': '',
+                    'value': ''
+                }]
+            }
+        ];
         return {
             data: linkDefault
         }
     },
     render: function() {
-        var modules = [];
-        var i = 0;
-        for (module in this.state.data) {
-            modules.push(<LinkWrapper removeArea={this.removeArea} handleTitle={this.handleTitle} addLink={this.addLink} removeLink={this.removeLink} title={module} key={i} onChange={this.handleChange} data={this.state.data[module]} />);
-            i++;
-        }
+        var self = this;
+        var modules = this.state.data.map(function(linkModule, i) {
+            return <LinkWrapper removeArea={self.removeArea} handleTitle={self.handleTitle} addLink={self.addLink} removeLink={self.removeLink} title={module} key={i} index={i} onChange={self.handleChange} data={linkModule} />
+        });
         return (
             <div className="col-sm-12">
                 <a className="btn btn-success" onClick={this.addArea}>new link area</a>
@@ -288,18 +325,18 @@ var LinkSettings = React.createClass({
 var LinkWrapper = React.createClass({
     render: function() {
         var self = this;
-        var links = this.props.data.map(function(link, i) {
-            return <LinkForm data={link} key={i} index={i} removeLink={self.props.removeLink} onChange={self.props.onChange} title={self.props.title} />
+        var links = this.props.data.links.map(function(link, i) {
+            return <LinkForm data={link} key={i} index={i} removeLink={self.props.removeLink} onChange={self.props.onChange} parentIndex={self.props.index} />
         });
         return (
             <div className="row">
                 <div className="col-sm-12">
                     <div className="btn-group pull-right" role="group">
-                        <button className="btn btn-success" onClick={this.props.addLink.bind(null, this.props.title)}>add link</button>
-                        <button className="btn btn-danger" onClick={this.props.removeArea.bind(null, this.props.title)}>remove area</button>
+                        <a className="btn btn-success" onClick={this.props.addLink.bind(null, this.props.index)}>add link</a>
+                        <a className="btn btn-danger" onClick={this.props.removeArea.bind(null, this.props.index)}>remove area</a>
                     </div>
                     <div className="input-group">
-                        <input id="title" type="text" title={this.props.title} onChange={this.props.handleTitle.bind(null, this.props.title )} className="form-control" data-prop="title" value={this.props.title}></input>
+                        <input id="title" type="text" title={this.props.data.title} onChange={this.props.handleTitle.bind(null, this.props.index )} className="form-control" data-prop="title" value={this.props.data.title}></input>
                         <span className="input-group-btn">
                            <button className="btn btn-default" type="button"><i className="fa fa-info-circle"></i></button>
                         </span>
@@ -322,17 +359,17 @@ var LinkForm = React.createClass({
                     <div className="panel-heading col-sm-12">
                         <div className="row">
                             <div className="col-sm-10">
-                                <input id="title" placeholder="title" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'title', 'index': this.props.index})} type="text" className="form-control" data-prop="title" value={this.props.data.title}></input>
+                                <input id="title" placeholder="title" onChange={this.props.onChange.bind(null, {'linkArea': this.props.parentIndex, 'value': 'title', 'index': this.props.index})} type="text" className="form-control" data-prop="title" value={this.props.data.title}></input>
                             </div>
                             <div className="col-sm-2">
-                                <a className="btn btn-danger pull-right btn-padded" onClick={this.props.removeLink.bind(null, { 'index' : this.props.index, 'linkArea' : this.props.title })}>x</a>
+                                <a className="btn btn-danger pull-right btn-padded" onClick={this.props.removeLink.bind(null, { 'index' : this.props.index, 'linkArea' : this.props.parentIndex })}>x</a>
                             </div>
                         </div>
                     </div>
                     <div className="panel-body">
-                        <input id="icon" placeholder="icon" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'icon', 'index': this.props.index})} type="text" className="form-control" data-prop="icon" value={this.props.data.icon}></input>
-                        <input id="text" placeholder="text" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'text', 'index': this.props.index})} type="text" className="form-control" data-prop="text" value={this.props.data.text}></input>
-                        <input id="value" placeholder="value" onChange={this.props.onChange.bind(null, {'linkArea': this.props.title, 'value': 'value', 'index': this.props.index})} type="text" className="form-control" data-prop="value" value={this.props.data.value}></input>
+                        <input id="icon" placeholder="icon" onChange={this.props.onChange.bind(null, {'linkArea': this.props.parentIndex, 'value': 'icon', 'index': this.props.index})} type="text" className="form-control" data-prop="icon" value={this.props.data.icon}></input>
+                        <input id="text" placeholder="text" onChange={this.props.onChange.bind(null, {'linkArea': this.props.parentIndex, 'value': 'text', 'index': this.props.index})} type="text" className="form-control" data-prop="text" value={this.props.data.text}></input>
+                        <input id="value" placeholder="value" onChange={this.props.onChange.bind(null, {'linkArea': this.props.parentIndex, 'value': 'value', 'index': this.props.index})} type="text" className="form-control" data-prop="value" value={this.props.data.value}></input>
                     </div>
                 </div>
             </div>
