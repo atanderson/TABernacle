@@ -45,13 +45,32 @@ window.logStorage = function(){
 var React = require('react');
 
 var Search = React.createClass({
+    componentDidMount: function() {
+        var self = this;
+        chrome.storage.sync.get({
+            searchEnabled: 'enabled'
+        }, function(items){
+            self.setState({
+                enabled: items.searchEnabled
+            });
+        });
+    },
+    getInitialState: function() {
+        return {
+            enabled: ''
+        };
+    },
     render: function() {
-        return (
-            <div className="module clearfix search">
-                <SearchModes />
-                <input type="text" id="search-input" className="search-input" data-placeholder="search" placeholder="search" />
-            </div>
-        )
+        if (this.state.enabled == 'enabled') {  
+            return (          
+                <div className="module clearfix search">
+                    <SearchModes />
+                    <input type="text" id="search-input" className="search-input" data-placeholder="search" placeholder="search" />
+                </div>
+            )
+        } else {
+            return null
+        }
     }
 });
 
@@ -203,31 +222,72 @@ var Links = React.createClass({
     componentDidMount: function(){
         var self = this;
         chrome.storage.sync.get({
-            linkData: []
+            linkData: [],
+            linksEnabled: 'enabled',
+            calendarEnabled: 'enabled',
+            todoEnabled: 'enabled'
         }, function(items){
             self.setState({
-                data: items.linkData
+                data: items.linkData,
+                linksEnabled: items.linksEnabled,
+                calendarEnabled: items.calendarEnabled,
+                todoEnabled: items.todoEnabled
             });
         });
     },
     getInitialState: function() {
         return {
-            data: []
+            data: [],
+            linksEnabled: '',
+            calendarEnabled: '',
+            todoEnabled: ''
         }
     },
     render: function() {
+        var leftColumn,
+        todoClass,
+        linkClass,
+        calendar,
+        rightColumn;
         var modules = this.state.data.map(function(module, i) {
             return <LinkModule title={module.title} data={module} key={i} />
         });
+
+        if (this.state.linksEnabled == 'enabled') {
+            if (this.state.todoEnabled == 'enabled') {
+                linkClass = "col-left"
+            } else {
+                linkClass = ""
+            }
+
+            leftColumn =    <div className={ linkClass }>
+                                {modules}
+                            </div>,
+            todoClass = "col-right";
+        } else {
+            leftColumn = null,
+            todoClass = ""
+        }
+
+        if (this.state.calendarEnabled == 'enabled') {
+            calendar = <Calendar />
+        } else {
+            calendar = null
+        }
+
+        if (this.state.todoEnabled == 'enabled') {
+           rightColumn = <div className={ todoClass }>
+                            <Todo />
+                         </div> 
+        } else {
+            rightColumn = null
+        }
+
         return (
             <div className="links-wrapper clearfix">
-                <div className="col-left">
-                    {modules}
-                </div>
-                <div className="col-right">
-                    <Todo />
-                </div>
-                <Calendar />
+                { leftColumn }
+                { rightColumn }
+                { calendar }
             </div>
         )
     }
