@@ -59,7 +59,7 @@ var SearchModes = React.createClass({
     componentDidMount: function() {
         var self = this;
         chrome.storage.sync.get({
-            modes: ''
+            modes: []
         }, function(items){
             self.setState({
                 data: items.modes
@@ -114,7 +114,7 @@ var LinkModule = React.createClass({
             <div id="link-module-wrapper">
                 <div className="module small clearfix links">
                     <h4>{this.props.title}</ h4>
-                    <LinkList data={this.props.data}/>
+                    <LinkList data={this.props.data.links}/>
                 </div>
             </div>
         )
@@ -203,7 +203,7 @@ var Links = React.createClass({
     componentDidMount: function(){
         var self = this;
         chrome.storage.sync.get({
-            linkData: ''
+            linkData: []
         }, function(items){
             self.setState({
                 data: items.linkData
@@ -216,12 +216,9 @@ var Links = React.createClass({
         }
     },
     render: function() {
-        var modules = [];
-        var i = 0;
-        for (module in this.state.data) {
-            modules.push(<LinkModule title={module} data={this.state.data[module]} key={i} />);
-            i++;
-        }
+        var modules = this.state.data.map(function(module, i) {
+            return <LinkModule title={module.title} data={module} key={i} />
+        });
         return (
             <div className="links-wrapper clearfix">
                 <div className="col-left">
