@@ -44,9 +44,11 @@ window.logStorage = function(){
 
 var React = require('react');
 
+//Search bar input and search mode buttons
 var Search = React.createClass({
     componentDidMount: function() {
         var self = this;
+        //Detect if the component is enabled
         chrome.storage.sync.get({
             searchEnabled: 'enabled'
         }, function(items){
@@ -56,11 +58,13 @@ var Search = React.createClass({
         });
     },
     getInitialState: function() {
+        //Set initial state to null (not enabled or disabled)
         return {
-            enabled: ''
+            enabled: null
         };
     },
     render: function() {
+        //If enabled option is checked render the element, otherwise do not
         if (this.state.enabled == 'enabled') {  
             return (          
                 <div className="module clearfix search">
@@ -69,14 +73,17 @@ var Search = React.createClass({
                 </div>
             )
         } else {
-            return null
+            return null;
         }
     }
 });
 
+//list of search modes that appears above the search bar (if desired)
+//TODO incorperate the search handlers into this component?
 var SearchModes = React.createClass({
     componentDidMount: function() {
         var self = this;
+        //Once mounted, get the modes set in the options
         chrome.storage.sync.get({
             modes: []
         }, function(items){
@@ -91,6 +98,7 @@ var SearchModes = React.createClass({
         }
     },
     render: function() {
+        //Key required so elements have unique index. Data passed = single mode
         var modes = this.state.data.map(function(mode, i){
             return <Mode data={mode} key={i} />
         });
@@ -102,16 +110,16 @@ var SearchModes = React.createClass({
     }
 });
 
+//The individual search mode button
 var Mode = React.createClass({
     render: function(){
+        var indicator = null;
+        //If the indicator (number tooltip) is set, render one
         if(this.props.data.indicator != ''){
-            var indicator = <span className="fa-stack fa-lg indicator">
-                                <i className="fa fa-circle fa-stack-1x"></i>
-                                <i className="fa fa-inverse fa-stack-1x">{this.props.data.indicator}</i>
-                            </span>
-        } else {
-            var indicator = null;
+            //Define the indicator as a circle wrapped around the tooltip number
+            indicator = <span className="fa-stack fa-lg indicator"><i className="fa fa-circle fa-stack-1x"></i><i className="fa fa-inverse fa-stack-1x">{this.props.data.indicator}</i></span>
         }
+        //If the button is to be shown (set to true in options)
         if(this.props.data.show) {
             return (
                 <li id={this.props.data.title} className="float mode">
@@ -127,6 +135,77 @@ var Mode = React.createClass({
     }
 });
 
+//Monsterous parent element of all the links and their containers
+var Links = React.createClass({
+    //Once mounted, get all the data needed to render out the component
+    componentDidMount: function(){
+        var self = this;
+        chrome.storage.sync.get({
+            linkData: [],
+            linksEnabled: 'enabled',
+            calendarEnabled: 'enabled',
+            todoEnabled: 'enabled'
+        }, function(items){
+            self.setState({
+                data: items.linkData,
+                linksEnabled: items.linksEnabled,
+                calendarEnabled: items.calendarEnabled,
+                todoEnabled: items.todoEnabled
+            });
+        });
+    },
+    //Render nothing but store the state as proper primatives to avoid errors
+    getInitialState: function() {
+        return {
+            data: [],
+            linksEnabled: '',
+            calendarEnabled: '',
+            todoEnabled: ''
+        }
+    },
+    render: function() {
+        //Set conditionally rendered elements as nothing to begin with
+        var leftColumn = null,
+            rightColumn = null,
+            calendar = null,
+            todoClass = '',
+            linkClass = '';
+        //Figure this out immediately to avoid undefined issues
+        //TODO Should not be rendered if modules disabled
+        var modules = this.state.data.map(function(module, i) {
+            return <LinkModule title={module.title} data={module} key={i} />
+        });
+        //If link area set to enabled in the options
+        if (this.state.linksEnabled == 'enabled') {
+            //If the todolist is also set to enabled
+            if (this.state.todoEnabled == 'enabled') {
+                //Make the two areas take up only 1/2 the screen
+                linkClass = "col-left";
+                todoClass = "col-right";
+            }
+            //Define the left column
+            leftColumn = <div className={ linkClass }>{modules}</div>
+        }
+        //If calendar is set to enabled in the options
+        if (this.state.calendarEnabled == 'enabled') {
+            calendar = <Calendar />
+        }
+        //If todo list is enabled in the options
+        if (this.state.todoEnabled == 'enabled') {
+           rightColumn = <div className={ todoClass }><Todo /></div> 
+        }
+        //Finally, return the link area to be rendered
+        return (
+            <div className="links-wrapper clearfix">
+                { leftColumn }
+                { rightColumn }
+                { calendar }
+            </div>
+        )
+    }
+});
+
+//Wrapper for all the little link icons. Props represents the area and the links
 var LinkModule = React.createClass({
     render: function(){
         return (
@@ -140,19 +219,22 @@ var LinkModule = React.createClass({
     }
 });
 
+//Ul wrapper of the links icons. Data represents link array.
+//TODO combine this with the LinkModue element since it is just a ul...
 var LinkList = React.createClass({
     render: function() {
         var links = this.props.data.map(function(link, i) {
             return <ALink data={link} key={i} />
         });
         return (
-            <ul id="Linkset-2 un-list">
+            <ul id="un-list">
                 {links}
             </ul>
         )
     }
 });
 
+//An individual link. Data at this point represnts the inidividual link props
 var ALink = React.createClass({
     render: function() {
         var icon = this.props.data.icon + " fa fa-inverse fa-stack-1x";
@@ -171,6 +253,8 @@ var ALink = React.createClass({
     }
 });
 
+//The todolist wrapper
+//TODO currently does not work. Merge in todo.js and render whole list w/ react
 var Todo = React.createClass({
     render: function() {
         return (
@@ -187,6 +271,7 @@ var Todo = React.createClass({
     }
 });
 
+//The form that adds the todo items
 var TodoForm = React.createClass({
     render: function() {
         return (
@@ -203,6 +288,8 @@ var TodoForm = React.createClass({
     }
 });
 
+//Wrapper for calendar that gets added in via ajax.
+//TODO merge in calendar.js and render with react.
 var Calendar = React.createClass({
     render: function() {
         return (
@@ -218,81 +305,7 @@ var Calendar = React.createClass({
     }
 });
 
-var Links = React.createClass({
-    componentDidMount: function(){
-        var self = this;
-        chrome.storage.sync.get({
-            linkData: [],
-            linksEnabled: 'enabled',
-            calendarEnabled: 'enabled',
-            todoEnabled: 'enabled'
-        }, function(items){
-            self.setState({
-                data: items.linkData,
-                linksEnabled: items.linksEnabled,
-                calendarEnabled: items.calendarEnabled,
-                todoEnabled: items.todoEnabled
-            });
-        });
-    },
-    getInitialState: function() {
-        return {
-            data: [],
-            linksEnabled: '',
-            calendarEnabled: '',
-            todoEnabled: ''
-        }
-    },
-    render: function() {
-        var leftColumn,
-        todoClass,
-        linkClass,
-        calendar,
-        rightColumn;
-        var modules = this.state.data.map(function(module, i) {
-            return <LinkModule title={module.title} data={module} key={i} />
-        });
-
-        if (this.state.linksEnabled == 'enabled') {
-            if (this.state.todoEnabled == 'enabled') {
-                linkClass = "col-left"
-            } else {
-                linkClass = ""
-            }
-
-            leftColumn =    <div className={ linkClass }>
-                                {modules}
-                            </div>,
-            todoClass = "col-right";
-        } else {
-            leftColumn = null,
-            todoClass = ""
-        }
-
-        if (this.state.calendarEnabled == 'enabled') {
-            calendar = <Calendar />
-        } else {
-            calendar = null
-        }
-
-        if (this.state.todoEnabled == 'enabled') {
-           rightColumn = <div className={ todoClass }>
-                            <Todo />
-                         </div> 
-        } else {
-            rightColumn = null
-        }
-
-        return (
-            <div className="links-wrapper clearfix">
-                { leftColumn }
-                { rightColumn }
-                { calendar }
-            </div>
-        )
-    }
-});
-
+//Over-arching application wrapper
 var APP = React.createClass({
     render: function() {
         return( 
@@ -304,6 +317,7 @@ var APP = React.createClass({
     }
 });
 
+//Render it to the page
 React.render(
     <APP />,
     document.getElementById('app')
