@@ -45,6 +45,7 @@ var React = require('react');
 //Main container for the options page
 var Options = React.createClass({
     getInitialState: function(){
+        //This sets the first "active" tab
         return { settingEditable: 'LinkSettings'};
     },
     swapModule: function(name, event){
@@ -52,6 +53,7 @@ var Options = React.createClass({
     },
     render: function() {
         var settingArea;
+        //TODO there has to be a cleaner/more concise way of doing this
         if (this.state.settingEditable == 'CalendarSettings') {
             settingArea = <CalendarSettings />;
         } else if (this.state.settingEditable == 'LinkSettings') {
@@ -65,6 +67,7 @@ var Options = React.createClass({
         } else if (this.state.settingEditable == 'TodoSettings') {
             settingArea = <TodoSettings />;
         }
+
         return (
             <div className="container">
                 <nav className="navbar navbar-default">
@@ -79,6 +82,7 @@ var Options = React.createClass({
     }
 });
 
+//Navbar that activates the various options panels via state change
 var SettingsToggles = React.createClass({
     render: function() {
         return(
@@ -129,8 +133,8 @@ var CalendarSettings = React.createClass({
         }
     },
     disableToggle: function() {
-        var self = this;
-        var chromeData = {};
+        var self = this,
+        chromeData = {};
         if(self.state.enabled == 'enabled') {
             self.setState({enabled: 'disabled'});
             chromeData.calendarEnabled = 'disabled';
@@ -140,7 +144,6 @@ var CalendarSettings = React.createClass({
         }
         chrome.storage.sync.set(chromeData);
     },
-    //Render two inputs with labels
     render: function() {
         var buttonClass;
         if (this.state.enabled == 'enabled') {
@@ -150,7 +153,7 @@ var CalendarSettings = React.createClass({
         }
         return (
             <form id="calendar-settings" className="col-md-4">
-                <a className={ buttonClass } onClick={this.disableToggle}>{this.state.enabled}</a>
+                <a className={buttonClass} onClick={this.disableToggle}>{this.state.enabled}</a>
                 <hr />
                 <div className="form-group">
                     <label htmlFor="calID">Calendar ID</label>
@@ -161,18 +164,21 @@ var CalendarSettings = React.createClass({
                     <label htmlFor="calKey">Calendar API Key</label>
                     <input id="calKey" className="form-control" type="text" onChange={this.handleChange.bind(this, 'googleCalendarKey')} value={this.state.googleCalendarKey} />
                 </div>
-
             </form>
         );
     }
 });
 
+//All of the settings/values for link containers and their associated links
 var LinkSettings = React.createClass({
     addArea: function (){
         //Make sure we are binding to the correct element
         var self = this,
+
         //Store the state (which should be immutable) as a new variable
-        state = self.state.data;
+        state = self.state.data,
+        //Empty object for chrome storage to prevent syntax issues
+        chromeData = {};
 
         var newArea = {   
             'title': 'New Area',
@@ -181,28 +187,27 @@ var LinkSettings = React.createClass({
 
         //Create an empty array for the new area
         state.push(newArea);
-        self.setState(state);
 
-        //Empty object for chrome storage to prevent syntax issues
-        var chromeData = {};
+        self.setState(state);
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     removeArea: function(index){
         var self = this,
-        state = self.state.data;
+        state = self.state.data,
+        chromeData = {};
 
         //Remove the link area object and it's associated array
         state.splice(index , 1);
-        self.setState(state);
 
-        var chromeData = {};
+        self.setState(state);
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     addLink: function(index){
         var self = this,
-        state = self.state.data;
+        state = self.state.data,
+        chromeData = {};
 
         //Add a blank link object to the link area array
         state[index].links.push({
@@ -211,22 +216,20 @@ var LinkSettings = React.createClass({
             'text': '',
             'value': ''
         });
-        self.setState(state);
 
-        var chromeData = {};
+        self.setState(state);
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     removeLink: function(link){
-        var self = this;
-        var state = self.state.data;
+        var self = this,
+        state = self.state.data,
+        chromeData = {};
 
         //Remove the link of the specified index from the specified linkarea
         state[link.linkArea].links.splice(link.index, 1);
 
         self.setState(state);
-
-        var chromeData = {};
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
@@ -235,41 +238,36 @@ var LinkSettings = React.createClass({
         linkArea = name.linkArea,
         index = name.index,
         value = name.value,
-        state = self.state.data;
+        state = self.state.data,
+        chromeData = {};
 
         state[linkArea].links[index][value] = event.target.value;
+        
         self.setState({state});
-
-        var chromeData = {};
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     handleTitle: function(index, event){
-
-        //TODO ordering is off on page refresh?
-        //Might need to use array to garuntee order
-
         var self = this,
         val = event.target.value,
-        state = self.state.data;
+        state = self.state.data,
+        chromeData = {};
         
         state[index].title = val;
-        self.setState({
-            state
-        });
-
-        var chromeData = {};
+        
+        self.setState({state});
         chromeData.linkData = state;
         chrome.storage.sync.set(chromeData);
     },
     componentDidMount: function () {
-        var self = this;
-        var linkDefault = [
+        var self = this,
+        linkDefault = [
             {   
                 'title': '',
                 'links': []
             }
         ];
+
         chrome.storage.sync.get({
             linkData: linkDefault,
             linksEnabled: 'enabled'
@@ -287,14 +285,16 @@ var LinkSettings = React.createClass({
                 'links': []
             }
         ];
+
         return {
             data: linkDefault,
             enabled: ''
         }
     },
     disableToggle: function() {
-        var self = this;
-        var chromeData = {};
+        var self = this,
+        chromeData = {};
+
         if(self.state.enabled == 'enabled') {
             self.setState({enabled: 'disabled'});
             chromeData.linksEnabled = 'disabled';
@@ -302,19 +302,22 @@ var LinkSettings = React.createClass({
             self.setState({ enabled: 'enabled' });
             chromeData.linksEnabled = 'enabled';
         }
+
         chrome.storage.sync.set(chromeData);
     },
     render: function() {
-        var self = this;
-        var modules = this.state.data.map(function(linkModule, i) {
+        var self = this,
+        modules = this.state.data.map(function(linkModule, i) {
             return <LinkWrapper removeArea={self.removeArea} handleTitle={self.handleTitle} addLink={self.addLink} removeLink={self.removeLink} title={module} key={i} index={i} onChange={self.handleChange} data={linkModule} />
-        });
-        var buttonClass;
+        }),
+        buttonClass;
+
         if (this.state.enabled == 'enabled') {
             buttonClass = 'btn btn-primary';
         } else if (this.state.enabled == 'disabled') {
             buttonClass = 'btn btn-default';
         }
+
         return (
             <div className="col-sm-12">
                 <a className={ buttonClass } onClick={this.disableToggle}>{this.state.enabled}</a>
@@ -332,6 +335,7 @@ var TodoSettings = React.createClass({
     componentDidMount: function () {
         //Make sure we are binding to the correct element
         var self = this;
+
         chrome.storage.sync.get({
             todoEnabled: 'enabled'
         }, function(items){
@@ -347,8 +351,9 @@ var TodoSettings = React.createClass({
         }
     },
     disableToggle: function() {
-        var self = this;
-        var chromeData = {};
+        var self = this,
+        chromeData = {};
+
         if(self.state.enabled == 'enabled') {
             self.setState({enabled: 'disabled'});
             chromeData.todoEnabled = 'disabled';
@@ -356,16 +361,19 @@ var TodoSettings = React.createClass({
             self.setState({ enabled: 'enabled' });
             chromeData.todoEnabled = 'enabled';
         }
+
         chrome.storage.sync.set(chromeData);
     },
     //Render two inputs with labels
     render: function() {
         var buttonClass;
+
         if (this.state.enabled == 'enabled') {
             buttonClass = 'btn btn-primary';
         } else if (this.state.enabled == 'disabled') {
             buttonClass = 'btn btn-default';
         }
+
         return (
             <form id="todo-settings" className="col-md-4">
                 <a className={ buttonClass } onClick={this.disableToggle}>{this.state.enabled}</a>
@@ -376,10 +384,11 @@ var TodoSettings = React.createClass({
 
 var LinkWrapper = React.createClass({
     render: function() {
-        var self = this;
-        var links = this.props.data.links.map(function(link, i) {
+        var self = this,
+        links = this.props.data.links.map(function(link, i) {
             return <LinkForm data={link} key={i} index={i} removeLink={self.props.removeLink} onChange={self.props.onChange} parentIndex={self.props.index} />
         });
+
         return (
             <div className="row">
                 <div className="col-sm-12 title-bar">
@@ -429,10 +438,11 @@ var LinkForm = React.createClass({
     }
 });
 
+//TODO remove extra stateData variable
 var ModeSettings = React.createClass({
     addMode: function() {
-        var self = this;
-        var state = self.state;
+        var self = this,
+        state = self.state;
 
         state.data.push({
             'hotkey': '',
@@ -462,22 +472,24 @@ var ModeSettings = React.createClass({
         chrome.storage.sync.set(chromeData);
     },
     handleChange: function(name, event) {
-        var self = this;
-        var index = name.index;
-        var value = name.value;
-        var state = self.state;
+        var self = this,
+        index = name.index,
+        value = name.value,
+        state = self.state,
+        stateData = state.data,
+        chromeData = {};
+
         state.data[index][value] = event.target.value;
-        var stateData = state.data
         self.setState({
             stateData
         });
-        var chromeData = {};
+
         chromeData.modes = state.data;
         chrome.storage.sync.set(chromeData);
     },
     componentDidMount: function() {
-        var self = this;
-        var modeDefault = [{
+        var self = this,
+        modeDefault = [{
                 'hotkey': '',
                 'indicator': '',
                 'queryBefore': '',
@@ -485,6 +497,7 @@ var ModeSettings = React.createClass({
                 'show': '',
                 'title': ''
             }];
+
         chrome.storage.sync.get({
             modes: modeDefault,
             searchEnabled: 'enabled'
@@ -510,8 +523,9 @@ var ModeSettings = React.createClass({
         }
     },
     disableToggle: function() {
-        var self = this;
-        var chromeData = {};
+        var self = this,
+        chromeData = {};
+
         if(self.state.enabled == 'enabled') {
             self.setState({enabled: 'disabled'});
             chromeData.searchEnabled = 'disabled';
@@ -519,25 +533,28 @@ var ModeSettings = React.createClass({
             self.setState({ enabled: 'enabled' });
             chromeData.searchEnabled = 'enabled';
         }
+
         chrome.storage.sync.set(chromeData);
     },
     render: function() {
-        var self = this;
-        var modes = this.state.data.map(function(mode, i){
+        var self = this,
+        modes = this.state.data.map(function(mode, i){
             return <ModeForm data={mode} removeMode={self.removeMode} onChange={self.handleChange} index={i} key={i} />
-        });
-        var buttonClass;
+        }),
+        buttonClass;
+
         if (this.state.enabled == 'enabled') {
             buttonClass = 'btn btn-primary';
         } else if (this.state.enabled == 'disabled') {
             buttonClass = 'btn btn-default';
         }
+
         return (
             <form id="mode-settings" className="col-sm-12">
-            <a className={ buttonClass } onClick={this.disableToggle}>{this.state.enabled}</a>
-            <a onClick={this.addMode} className='btn btn-success'>new search mode</a>
-            <hr />
-            {modes}
+                <a className={ buttonClass } onClick={this.disableToggle}>{this.state.enabled}</a>
+                <a onClick={this.addMode} className='btn btn-success'>new search mode</a>
+                <hr />
+                {modes}
             </form>
         )
     }
@@ -573,18 +590,18 @@ var ModeForm = React.createClass({
 
 var CssSettings = React.createClass({
     handleChange: function(event) {
+        var state = {},
+        val = event.target.value,
+        setting = {};
 
-        //TODO: rename the keys to be the same between chrome storage and state
-        var state = {};
-        var val = event.target.value
         this.setState({ customCSS: val });
 
-        var setting = {};
         setting.customCSS = val;
         chrome.storage.sync.set(setting);
     },
     componentDidMount: function () {
         var self = this;
+
         chrome.storage.sync.get({
             customCSS: ''
         }, function(items){
@@ -610,18 +627,18 @@ var CssSettings = React.createClass({
 
 var BgSettings = React.createClass({
     handleChange: function(event) {
+        var state = {},
+        val = event.target.value,
+        setting = {};
 
-        //TODO: rename the keys to be the same between chrome storage and state
-        var state = {};
-        var val = event.target.value
         this.setState({ bgImage: val });
 
-        var setting = {};
         setting.bgImage = val;
         chrome.storage.sync.set(setting);
     },
     componentDidMount: function () {
         var self = this;
+        
         chrome.storage.sync.get({
             bgImage: ''
         }, function(items){
@@ -632,7 +649,7 @@ var BgSettings = React.createClass({
     },
     getInitialState: function() {
         return {
-            customCSS: '',
+            bgImage: '',
         }
     },
     render: function() {
