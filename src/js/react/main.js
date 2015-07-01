@@ -5,14 +5,12 @@
 window.logStorage = function(){
 
     //Load these as default when their values are not present (can prevent data type mismatch)
-    var linkDefault = {
-        'Link Area Title': [{
+    var linkDefault = [
+        {   
             'title': '',
-            'icon': '',
-            'text': '',
-            'value': ''
-        }]
-    }, 
+            'links': []
+        }
+    ], 
     modeDefault = [{
         'hotkey': '',
         'indicator': '',
