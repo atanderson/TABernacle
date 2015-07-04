@@ -1,45 +1,6 @@
 /** @jsx React.DOM */
 
-//TODO: move to separate file? Useful on the main page as well.
-//For debugging. Called in the console as needed.
-window.logStorage = function(){
-
-    //Load these as default when their values are not present (can prevent data type mismatch)
-    var linkDefault = [
-        {   
-            'title': '',
-            'links': []
-        }
-    ],
-    modeDefault = [{
-        'hotkey': '',
-        'indicator': '',
-        'queryBefore': '',
-        'queryafter': '',
-        'show': '',
-        'title': ''
-    }];
-
-    //Basic storage grabber
-    chrome.storage.sync.get({
-        googleCalendarID: '',
-        googleCalendarKey: '',
-        linkData: linkDefault,
-        modes: modeDefault,
-        customCSS: '',
-        bgImage: ''
-    }, function(items) {
-        console.log("allData", items);
-        console.log("calID", items.googleCalendarID);
-        console.log("calKey", items.googleCalendarKey);
-        console.log("linkData", items.linkData);
-        console.log("modes", items.modes);
-        console.log("customCSS", items.customCss);
-        console.log("bgImage", items.bgImage);
-    });
-
-};
-
+var Debug = require('../components/debug');
 var React = require('react');
 
 //Main container for the options page
