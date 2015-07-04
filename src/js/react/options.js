@@ -129,7 +129,7 @@ var CalendarSettings = React.createClass({
         return {
             googleCalendarKey: '',
             googleCalendarID: '',
-            enabled: ''
+            enabled: 'enabled'
         }
     },
     disableToggle: function() {
@@ -288,7 +288,7 @@ var LinkSettings = React.createClass({
 
         return {
             data: linkDefault,
-            enabled: ''
+            enabled: 'enabled'
         }
     },
     disableToggle: function() {
@@ -347,7 +347,7 @@ var TodoSettings = React.createClass({
     //Load blank component initially, needed because google storage retreval is async
     getInitialState: function() {
         return {
-            enabled: ''
+            enabled: 'enabled'
         }
     },
     disableToggle: function() {
@@ -488,6 +488,7 @@ var ModeSettings = React.createClass({
         chrome.storage.sync.set(chromeData);
     },
     componentDidMount: function() {
+    
         var self = this,
         modeDefault = [{
                 'hotkey': '',
@@ -519,7 +520,7 @@ var ModeSettings = React.createClass({
             }];
         return {
             data: [],
-            enabled: ''
+            enabled: 'enabled'
         }
     },
     disableToggle: function() {
@@ -638,7 +639,7 @@ var BgSettings = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        
+
         chrome.storage.sync.get({
             bgImage: ''
         }, function(items){

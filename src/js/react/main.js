@@ -55,6 +55,10 @@ var Search = React.createClass({
             });
         });
     },
+    search: function(mode) {
+        console.log(mode);
+        submitSearch(mode);
+    },
     getInitialState: function() {
         //Set initial state to null (not enabled or disabled)
         return {
@@ -66,7 +70,7 @@ var Search = React.createClass({
         if (this.state.enabled == 'enabled') {  
             return (          
                 <div className="module clearfix search">
-                    <SearchModes />
+                    <SearchModes search={this.search} />
                     <input type="text" id="search-input" className="search-input" data-placeholder="search" placeholder="search" />
                 </div>
             )
@@ -96,9 +100,10 @@ var SearchModes = React.createClass({
         }
     },
     render: function() {
+        var self = this;
         //Key required so elements have unique index. Data passed = single mode
         var modes = this.state.data.map(function(mode, i){
-            return <Mode data={mode} key={i} />
+            return <Mode data={mode} search={self.props.search} key={i} />
         });
         return (
             <ul id="search-modes" className="un-list search-modes">
@@ -120,7 +125,7 @@ var Mode = React.createClass({
         //If the button is to be shown (set to true in options)
         if(this.props.data.show) {
             return (
-                <li id={this.props.data.title} className="float mode">
+                <li id={this.props.data.title} onClick={this.props.search.bind(null, this.props.data.title)} className="float mode">
                     <a className="icon search-mode" href="#">
                         {this.props.data.title}
                     </a>
@@ -254,16 +259,84 @@ var ALink = React.createClass({
 //The todolist wrapper
 //TODO currently does not work. Merge in todo.js and render whole list w/ react
 var Todo = React.createClass({
-    render: function() {
+    componentDidMount: function(){
+        var self = this,
+        todoDefault = {
+            'active': [],
+            'done': []
+        };
+
+        chrome.storage.sync.get({
+            todoData: todoDefault
+        }, function(items){
+            self.setState({
+                data: items.todoData
+            });
+        });
+    },
+    getInitialState: function() {
+        var todoDefault = {
+            'active': [],
+            'done': []
+        };
+
+        return {
+            data: todoDefault,
+            reveal: "to-do"
+        }
+    },
+    toggleList: function () {
+        if (this.state.reveal == 'to-do') {
+            this.setState({
+                reveal: 'done'
+            })
+        } else if (this.state.reveal == 'done') {
+            this.setState({
+                reveal: 'to-do'
+            })
+        }
+    },
+    deleteItem: function (index) {
+        var self = this,
+        state = self.state.data,
+        chromeData = {};
+
+        if (this.state.reveal == 'to-do') {
+            state.done.push(state.active[index]);
+            state.active.splice(index, 1);
+        } else if (this.state.reveal == 'done') {
+            state.done.splice(index, 1);
+        }
+
+        self.setState(state);
+        chromeData.todoData = state;
+        chrome.storage.sync.set(chromeData);
+    },
+    handleSubmit: function(event) {
+        var self = this,
+        state = self.state.data,
+        chromeData = {};
+
+        if (event.which == 13){
+            event.preventDefault();
+            state.active.push(event.target.value);
+            event.target.value = '';
+        }
+
+        self.setState(state);
+        chromeData.todoData = state;
+        chrome.storage.sync.set(chromeData);
+    },
+    render: function () {
         return (
             <div className="module small todo-wrapper">
                 <h4>
-                    <span>To-Do</span>
-                    <a href="#" className="right">
+                    <span>{this.state.reveal}</span>
+                    <a href="#" className="right" onClick={this.toggleList}>
                         <i id="swapper" className="fa fa-arrows-h"></i>
                     </a>
                 </h4>
-                <TodoForm />
+                <TodoForm data={this.state.data} handleSubmit={this.handleSubmit} deleteItem={this.deleteItem} reveal={this.state.reveal} />
             </div>
         )
     }
@@ -272,19 +345,45 @@ var Todo = React.createClass({
 //The form that adds the todo items
 var TodoForm = React.createClass({
     render: function() {
+        var items,
+        form,
+        self = this;
+
+        if (this.props.reveal == 'to-do') {
+            items = this.props.data.active.map(function(item, i){
+                        return <TodoItem key={i} index={i} task={item} deleteItem={self.props.deleteItem} />
+                    })
+            form =  <form>
+                        <input onKeyDown={self.props.handleSubmit} id="todo-field" className="todo-field" type="text" placeholder="enter a to-do item" data-placeholder="enter a to-do item" />
+                        <ul id="todo-list" className="todo-list">
+                            {items}
+                        </ul>
+                    </form>
+        } else if (this.props.reveal = 'done') {
+            items =  this.props.data.done.map(function(item, i){
+                        return <TodoItem key={i} index={i} task={item} deleteItem={self.props.deleteItem}/>
+                    })
+            form =  <form>
+                        <ul id="done-list" className="done-list">
+                            {items}
+                        </ul>
+                    </form>
+        }
         return (
             <div className="todo-inner">
-                <form>
-                    <input id="todo-field" className="todo-field" type="text" placeholder="enter a to-do item" data-placeholder="enter a to-do item" />
-                    <ul id="todo-list" className="todo-list"></ul>
-                </form>
-                <form>
-                    <ul id="done-list" className="done-list"></ul>
-                </form>
+                {form}
             </div>
         )
     }
 });
+
+var TodoItem = React.createClass({
+    render: function() {
+        return(
+            <li className="task" onClick={this.props.deleteItem.bind(null, this.props.index)}>{this.props.task}</li>
+        )
+    }
+})
 
 //Wrapper for calendar that gets added in via ajax.
 //TODO merge in calendar.js and render with react.

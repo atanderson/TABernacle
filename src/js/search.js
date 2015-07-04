@@ -57,15 +57,3 @@ var searchViaKey = function(input){
     });
 
 };
-
-var searchViaButtons = function(buttonWrappers){
-
-    $(buttonWrappers).on('click', 'li', function(){
-
-        var mode = $(this).attr('id');
-
-        submitSearch(mode);
-
-    });
-
-};
