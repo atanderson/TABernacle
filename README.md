@@ -10,7 +10,7 @@ You can also install by cloning the repo and loading it as an unpacked extension
 
 ##Usage
 
-**Note: This project is not the most intuative thing in the world. I made this extension primarily for personal use (and to learn a bit of react), so many of the labels could be more descriptive. Also none of the tooltips are filled in, so apologies in advance**
+**Note: This project is not the most intuitive thing in the world. I made this extension primarily for personal use (and to learn a bit of react), so many of the labels could be more descriptive. Also none of the tooltips are filled in, so apologies in advance**
 
 Configuration is handled by the extension's options page.
 All of the fields save automatically and are synced to chrome storage (should work across multiple devices).
@@ -101,7 +101,7 @@ Does not compile SCSS/LESS. Inserted in head so be careful what you put in there
 
 ### Background Image
 
-Unfortunately cannot be a local file due to Chrome extension restictions.
+Unfortunately cannot be a local file due to Chrome extension restrictions.
 
 
 *****
