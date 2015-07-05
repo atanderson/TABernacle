@@ -2,113 +2,110 @@
 
 *A custom new tab page for persnickety people.*
 
-##How To Use
+##Installation
 
-- Edit the config.js file to create the HTML elements for your page.
-- Edit the sass color variables and background-image.jpg to re-skin the page.
+[Chrome web store installation link](https://chrome.google.com/webstore/detail/tabernacle/ocdkoialkjmbdfmhdmcppmeljpcfibfi)
 
-##Config.js
+You can also install by cloning the repo and loading it as an unpacked extension (developer mode must be enabled)
 
-**Custom Links**
+##Usage
 
-Inside of the config object there is a links object that determines the titles/number of link containers (AKA modules) and their contents.
+**Note: This project is not the most intuative thing in the world. I made this extension primarily for personal use (and to learn a bit of react), so many of the labels could be more descriptive. Also none of the tooltips are filled in, so apologies in advance**
 
-*example*
+Configuration is handled by the extension's options page.
+All of the fields save automatically and are synced to chrome storage (should work across multiple devices).
 
-```Javascript
-    "links": {
-        //A module will be generated for each title
-        "titles": [
-            "Module 1"
-        ],
-        /*
-        This array represents a group of links to be appended into a module. 
-        The name is not used for anything, the sets will simply be appended
-        to the title with the same index.
-        */
-        "set1": [
-            //This object represents 
-            {   
-                //Title of the link (can be used for custom CSS if desired).
-                "title": "twitch",
-                //Font Awesome icon to be used for the link.
-                "icon": "fa-bell-o",
-                //Text of the link (can be combined with the icon for interesting effects).
-                "text": "",
-                //Href value for the link.
-                "value": "http://www.twitch.tv"
-            }
-        ]
-    }
-```
+TABernacle has four main elements:
+ -  Links to websites
+ -  A search bar with custom modes
+ -  Google calendar embed
+ -  To-do/done list
 
-**Google Calendar**
+All of the above can be enabled/disabled as you see fit.
 
-A google calendar ID and API key can be specified in the config object to output a google calendar into the "coming up" section
+In addition, you can optionally specify custom CSS and a custom background image.
 
-*example*
+### Links
 
-```Javascript
-    "calendar": {
-        "id": "myCalendar@gmail.com",
-        "apikey": "my api key"
-    }
-```
+[Sample Configuration](http://i.imgur.com/QudOnmV.png)
 
-**Custom Search Modes**
+[Result](http://i.imgur.com/NzqSi6N.png)
 
-Search modes are defined in the searchmodes object in the config, and wrap a string array around the search query in a new tab/window (browser dependant)
+**Area title**
 
-Hotkeys can be specified to activate search modes and use [Javascript keycodes](http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes)
+- The text for the link area's title bar 
 
-*example*
-```Javascript
-    "searchModes": {
-        //The name is the ID of the search mode (can be used for CSS)
-        "reddit": {
-            //Text to use for the button label
-            "label": "Reddit",
-            /*
-            Array used to generate the window location. query[0] will go before the 
-            search query, query[1] will go after.
-            */
-            "query": ["http://www.reddit.com/r/", ""],
-            //Hotkey used to execute a particular search mode
-            "hotkey": 49,
-            //Indicator for the hotkey
-            "indicator": 1,
-            //Make a button appear over the search input
-            "button": true
-        }
-    }
-```
+**Title**
 
-*another example*
-```Javascript
-//For a "disambiguation" wikipedia search
-"searchModes": {
-    "wikiAll": {
-        "label": "Wikipedia (all)",
-        "query": ["http://en.wikipedia.org/wiki/", "_(disambiguation)"],
-        "hotkey": 49,
-        "indicator": 1,
-        "button": false
-    }
-}
-```
+- Semantic title for the link
 
+**Icon**
 
-**Todo/Done List**
+- Font awesome icon to represent the link
 
-Basic todo list. Click the upper right icon to see items you have crossed off.
+**Text**
 
-Localstorage must be enabled to preserve data!
+- Text to represent the link
 
-##Skinning
+**Value**
 
-- Replace background-image.jpg in the images folder for a full-screen background image
-- Three sass variables control the color scheme for the skin and can be found at the top of styles.scss
+- Url for the link
+
+### Search modes
+
+[Sample Configuration](http://i.imgur.com/6HWrebf.png)
+
+[Result](http://i.imgur.com/XloT6hZ.png)
+
+**Text**
+
+- Text label for mode button
+
+**Url before search term**
+
+- Url fragment to be inserted before the search term
+
+**Url after search term**
+
+- Url fragment to be inserted after the search term
+
+**Hotkey**
+
+- Javascript KeyCode for the hotkey
+
+**Indicator**
+
+- Text label/tooltip for hotkey (because they keycode and hotkey value will not match)
+
+**Show?**
+
+- If `true`, show the button
+
+### Calendar
+
+[Sample Configuration](http://i.imgur.com/6tStWGt.png)
+
+[Result](http://i.imgur.com/UEfE6fU.png)
+
+**Calendar ID**
+
+- Google calendar ID for the calender you want to show (usually just e-mail address)
+
+**Calendar API key**
+
+- Your Google Calender API key
+
+### Custom CSS
+
+Does not compile SCSS/LESS. Inserted in head so be careful what you put in there (don't load a ton of fonts or external sheets).
+
+### Background Image
+
+Unfortunately cannot be a local file due to Chrome extension restictions.
+
 
 *****
 
-*jQuery, Moment.js & Font Awesome used under the terms of the [MIT license](http://opensource.org/licenses/MIT)*
+*Bootstrap, jQuery, Moment.js & Font Awesome used under the terms of the [MIT license](http://opensource.org/licenses/MIT)*
+
+*React used under the terms of the [BSD License](https://github.com/facebook/react/blob/master/LICENSE)*
