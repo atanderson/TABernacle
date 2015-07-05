@@ -1,15 +1,15 @@
 'use strict';
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var zip = require('gulp-zip');
-var del = require('del');
-var browserify = require('gulp-browserify');
-var concat = require('gulp-concat');
-var minifyCss = require('gulp-minify-css');
+var gulp = require('gulp'),
+sass = require('gulp-sass'),
+zip = require('gulp-zip'),
+del = require('del'),
+browserify = require('gulp-browserify'),
+concat = require('gulp-concat'),
+minifyCss = require('gulp-minify-css');
 
 gulp.task('browserify', function() {
-    gulp.src('./src/js/react/*.js')
+    gulp.src(['./src/js/components/main.js', './src/js/components/options.js'])
         .pipe(browserify({transform: 'reactify'}))
         //.pipe(concat('main.js'))
         .pipe(gulp.dest('./build/js'))
@@ -35,7 +35,7 @@ gulp.task('zip', function () {
 });
 
 gulp.task('javascript', function () {
-    gulp.src('./src/js/*.js')
+    gulp.src(['./src/js/*.js', './src/js/vendor/*.js'])
         .pipe(gulp.dest('./build/js'));
 });
 
