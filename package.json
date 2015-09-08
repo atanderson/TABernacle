@@ -1,0 +1,23 @@
+{
+  "name": "TABernacle",
+  "version": "1.0.0",
+  "description": "*A custom new tab page for persnickety people.*",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atanderson/TABernacle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/atanderson/TABernacle/issues"
+  },
+  "homepage": "https://github.com/atanderson/TABernacle",
+  "devDependencies": {
+    "gulp-minify-css": "^1.1.6",
+    "react": "^0.13.3"
+  }
+}
