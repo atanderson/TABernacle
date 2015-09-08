@@ -23,6 +23,7 @@
     "gulp-minify-css": "^1.2.1",
     "gulp-sass": "^2.0.4",
     "gulp-zip": "^3.0.2",
-    "react": "^0.13.3"
+    "react": "^0.13.3",
+    "reactify": "^1.1.1"
   }
 }
